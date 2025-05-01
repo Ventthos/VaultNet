@@ -1,0 +1,129 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|c:\\users\\ferna\\documents\\github\\vaultnet\\vaultnet\\db\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|solutionrelative:vaultnet\\db\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|c:\\users\\ferna\\documents\\github\\vaultnet\\vaultnet\\db\\bussiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|solutionrelative:vaultnet\\db\\bussiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|c:\\users\\ferna\\documents\\github\\vaultnet\\vaultnet\\db\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|solutionrelative:vaultnet\\db\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|c:\\users\\ferna\\documents\\github\\vaultnet\\vaultnet\\db\\change.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|solutionrelative:vaultnet\\db\\change.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|c:\\users\\ferna\\documents\\github\\vaultnet\\vaultnet\\db\\unit.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|solutionrelative:vaultnet\\db\\unit.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|c:\\users\\ferna\\documents\\github\\vaultnet\\vaultnet\\db\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}|VaultNet\\VaultNet.csproj|solutionrelative:vaultnet\\db\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Change.cs",
+              "DocumentMoniker": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Change.cs",
+              "RelativeDocumentMoniker": "VaultNet\\Db\\Change.cs",
+              "ToolTip": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Change.cs",
+              "RelativeToolTip": "VaultNet\\Db\\Change.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAA6wBYAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T05:56:54.52Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Product.cs",
+              "DocumentMoniker": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Product.cs",
+              "RelativeDocumentMoniker": "VaultNet\\Db\\Product.cs",
+              "ToolTip": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Product.cs",
+              "RelativeToolTip": "VaultNet\\Db\\Product.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAmwCUAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T04:12:05.259Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Unit.cs",
+              "DocumentMoniker": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Unit.cs",
+              "RelativeDocumentMoniker": "VaultNet\\Db\\Unit.cs",
+              "ToolTip": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Unit.cs",
+              "RelativeToolTip": "VaultNet\\Db\\Unit.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T01:18:18.552Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Category.cs",
+              "DocumentMoniker": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Category.cs",
+              "RelativeDocumentMoniker": "VaultNet\\Db\\Category.cs",
+              "ToolTip": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Category.cs",
+              "RelativeToolTip": "VaultNet\\Db\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T00:15:21.185Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\User.cs",
+              "RelativeDocumentMoniker": "VaultNet\\Db\\User.cs",
+              "ToolTip": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\User.cs",
+              "RelativeToolTip": "VaultNet\\Db\\User.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAA4wBoAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T00:02:47.304Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Bussiness.cs",
+              "DocumentMoniker": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Bussiness.cs",
+              "RelativeDocumentMoniker": "VaultNet\\Db\\Bussiness.cs",
+              "ToolTip": "C:\\Users\\ferna\\Documents\\GitHub\\VaultNet\\VaultNet\\Db\\Bussiness.cs",
+              "RelativeToolTip": "VaultNet\\Db\\Bussiness.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAxwBgAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-28T23:46:22.225Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

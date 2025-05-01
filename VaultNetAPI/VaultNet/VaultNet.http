@@ -1,0 +1,6 @@
+@VaultNet_HostAddress = http://localhost:5101
+
+GET {{VaultNet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

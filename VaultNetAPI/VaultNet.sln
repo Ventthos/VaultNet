@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaultNet", "VaultNet\VaultNet.csproj", "{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B74CABC-919F-4C7D-9B0C-6C9F667D9BC4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C51AA0BA-965C-444B-877F-DE4FB4F14B84}
+	EndGlobalSection
+EndGlobal
