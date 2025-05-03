@@ -21,13 +21,15 @@ namespace VaultNet.Db
         [StringLength(100)]
         public string? MaternalLastName { get; set; }
 
+        public string? Image { get; set; }
+
         [Required]
         public required string Email { get; set; }
 
         [Required]
         public required string Password { get; set; }
 
-        public virtual ICollection<Bussiness> Bussiness { get; set; } = new HashSet<Bussiness>();
+        public virtual ICollection<UserBussiness> Bussiness { get; set; } = new HashSet<UserBussiness>();
 
         public virtual ICollection<Change> Changes { get; set; } = new HashSet<Change>();
     }

@@ -18,9 +18,13 @@ namespace VaultNet.Db
         [StringLength(500)]
         public string? LogoUrl { get; set; }
 
-        public virtual ICollection<User> Users { get; set; } = new HashSet<User>();
+        public virtual ICollection<UserBussiness> Users { get; set; } = new HashSet<UserBussiness>();
 
         public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
+
+        public virtual ICollection<Unit> Units { get; set; } = new HashSet<Unit>();
+
+        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
 
         
     }

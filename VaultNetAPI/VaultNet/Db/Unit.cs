@@ -9,6 +9,11 @@ namespace VaultNet.Db
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UnitId { get; set; }
 
+        public int BussinessId { get; set; }
+
+        [ForeignKey(nameof(BussinessId))]
+        public Bussiness Bussiness { get; set; }
+
         [Required]
         [StringLength(50)]
         public required string Name { get; set; }

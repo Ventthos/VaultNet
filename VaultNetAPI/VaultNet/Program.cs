@@ -37,13 +37,13 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 var app = builder.Build();
 
-/*
+
 using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<VaultNetContext>();
     dataContext.Database.Migrate();
 }
-*/
+
 
 
 // Configure the HTTP request pipeline.

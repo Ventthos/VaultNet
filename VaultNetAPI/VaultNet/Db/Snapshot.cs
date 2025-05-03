@@ -17,6 +17,6 @@ namespace VaultNet.Db
 
         public DateTime Date { get; set; }
 
-        public ICollection<Product> Products { get; set; } = new HashSet<Product>();
+        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
     }
 }

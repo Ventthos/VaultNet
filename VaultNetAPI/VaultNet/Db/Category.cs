@@ -8,6 +8,11 @@ namespace VaultNet.Db
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CategoryId { get; set; }
+        
+        public int BussinessId { get; set; }
+
+        [ForeignKey(nameof(BussinessId))]
+        public virtual required Bussiness Bussiness { get; set; }
 
         [Required]
         [StringLength(100)]

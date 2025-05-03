@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VaultNet.Db;
 
@@ -11,9 +12,11 @@ using VaultNet.Db;
 namespace VaultNet.Migrations
 {
     [DbContext(typeof(VaultNetContext))]
-    partial class VaultNetContextModelSnapshot : ModelSnapshot
+    [Migration("20250503034308_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,9 +261,6 @@ namespace VaultNet.Migrations
 
                     b.Property<int>("BussinessId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("UserId", "BussinessId");
 
