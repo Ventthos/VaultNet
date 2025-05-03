@@ -16,6 +16,6 @@ namespace VaultNet.Db
         [Required,StringLength(10)]
         public string Symbol { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
     }
 }

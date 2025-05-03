@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using VaultNet.Db;
 
-namespace ChargedChat.Db
+namespace VaultNet.Db
 {
     public class Bussiness
     {
@@ -18,9 +18,9 @@ namespace ChargedChat.Db
         [StringLength(500)]
         public string? LogoUrl { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<User> Users { get; set; } = new HashSet<User>();
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
 
         
     }

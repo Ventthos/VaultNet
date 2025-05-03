@@ -1,4 +1,4 @@
-﻿using ChargedChat.Db;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -35,7 +35,7 @@ namespace VaultNet.Db
         public Category Category { get; set; }
 
 
-        public virtual ICollection<Change> Changes { get; set; }
-        public virtual ICollection<Snapshot> Snapshots { get; set; }
+        public virtual ICollection<Change> Changes { get; set; } = new HashSet<Change>();
+        public virtual ICollection<Snapshot> Snapshots { get; set; } = new HashSet<Snapshot>();
     }
 }

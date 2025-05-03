@@ -16,6 +16,6 @@ namespace VaultNet.Db
         [StringLength(7)]
         public required string Color { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
     }
 }

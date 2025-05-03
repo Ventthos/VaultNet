@@ -1,4 +1,4 @@
-﻿using ChargedChat.Db;
+﻿
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +9,16 @@ namespace VaultNet.Db
         public VaultNetContext(DbContextOptions<VaultNetContext> options) : base(options)
         {
 
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+                
         }
 
         public DbSet<User> Users { get; set; }

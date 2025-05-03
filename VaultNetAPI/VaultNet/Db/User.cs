@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using VaultNet.Db;
 
-namespace ChargedChat.Db
+namespace VaultNet.Db
 {
     public class User
     {
@@ -27,8 +27,8 @@ namespace ChargedChat.Db
         [Required]
         public required string Password { get; set; }
 
-        public virtual ICollection<Bussiness> Bussiness { get; set; }
+        public virtual ICollection<Bussiness> Bussiness { get; set; } = new HashSet<Bussiness>();
 
-        public virtual ICollection<Change> Changes { get; set; }
+        public virtual ICollection<Change> Changes { get; set; } = new HashSet<Change>();
     }
 }
