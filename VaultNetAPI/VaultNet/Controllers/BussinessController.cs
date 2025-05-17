@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using VaultNet.Db;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -19,9 +20,14 @@ namespace VaultNet.Controllers
         }
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IResult> Get(int id)
         {
-            return "value";
+            Bussiness? bussiness = await _context.Bussiness.FindAsync(id);
+            if(bussiness != null)
+            {
+                return Results.Ok(bussiness);
+            }
+            return Results.NotFound("No bussiness found with that Id");
         }
 
         public class BussinessRequest

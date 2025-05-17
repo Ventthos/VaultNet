@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VaultNet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc3595d5e83f4439efbf5bff6d82d29439768ea0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+32e417e259cdebb2d2e10ccbb6c63b5693471d68")]
 [assembly: System.Reflection.AssemblyProductAttribute("VaultNet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VaultNet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
