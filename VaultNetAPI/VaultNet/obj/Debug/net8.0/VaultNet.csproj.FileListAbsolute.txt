@@ -135,3 +135,4 @@ C:\Users\ferna\Documents\GitHub\VaultNet\VaultNetAPI\VaultNet\bin\Debug\net8.0\t
 C:\Users\ferna\Documents\GitHub\VaultNet\VaultNetAPI\VaultNet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\ferna\Documents\GitHub\VaultNet\VaultNetAPI\VaultNet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\ferna\Documents\GitHub\VaultNet\VaultNetAPI\VaultNet\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\ferna\Documents\GitHub\VaultNet\VaultNetAPI\VaultNet\bin\Debug\net8.0\VaultNet.staticwebassets.runtime.json

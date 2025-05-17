@@ -60,6 +60,8 @@ namespace VaultNet.Controllers
             public string? MaternalLastName { get; set; }
 
             public required string Email { get; set; }
+
+            public string? Image { get; set; }
         }
 
         [HttpGet("{id}")]
@@ -79,7 +81,8 @@ namespace VaultNet.Controllers
                 Name = user.Name,
                 PaternalLastName = user.PaternalLastName,
                 MaternalLastName = user.MaternalLastName,
-                Email = user.Email
+                Email = user.Email,
+                Image = user.Image,
             });
         }
 
@@ -109,7 +112,8 @@ namespace VaultNet.Controllers
                     Name = user.Name,
                     PaternalLastName = user.PaternalLastName,
                     MaternalLastName = user.MaternalLastName,
-                    Email = user.Email
+                    Email = user.Email,
+                    Image = user.Image,
                 });
             }
 
@@ -137,7 +141,8 @@ namespace VaultNet.Controllers
                 Name = user.Name,
                 PaternalLastName = user.PaternalLastName,
                 MaternalLastName = user.MaternalLastName,
-                Email = user.Email
+                Email = user.Email,
+                Image = user.Image
             });
         }
     }
