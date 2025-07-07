@@ -59,13 +59,29 @@ public class UserService {
     }
 
     public UserResponseDto loginUser(LoginUserDto loginUser) throws IllegalArgumentException{
+        // Vemos si existe el usuario
         Optional<User> userInRepo = userRepository.findByEmail(loginUser.email());
         if(userInRepo.isEmpty()){
             throw new IllegalArgumentException("No existe una cuenta con el correo proporcionado.");
         }
+        // Vemos si la contraseña coincide
         if(!passwordEncoder.matches(loginUser.password(), userInRepo.get().getPassword())){
             throw new IllegalArgumentException("La contraseña proporcionada no coincide.");
         }
+        // Obtenemos el usuario
+        User loggedUser = userInRepo.get();
+        return new UserResponseDto(loggedUser.getUserId(),loggedUser.getName(), loggedUser.getPaternalLastName(),
+                loggedUser.getMaternalLastName(), loggedUser.getEmail());
+    }
+
+    public UserResponseDto GetUserById(Long id) throws IllegalArgumentException{
+        // Vemos si existe el usuario
+        Optional<User> userInRepo = userRepository.findById(id);
+        // Si no existe mandamos error
+        if(userInRepo.isEmpty()){
+            throw new IllegalArgumentException("No existe un usuario con el ID proporcionado");
+        }
+        // Obtenemos el usuario si existe
         User loggedUser = userInRepo.get();
         return new UserResponseDto(loggedUser.getUserId(),loggedUser.getName(), loggedUser.getPaternalLastName(),
                 loggedUser.getMaternalLastName(), loggedUser.getEmail());
