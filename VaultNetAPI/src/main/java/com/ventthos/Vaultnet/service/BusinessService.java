@@ -69,7 +69,22 @@ public class BusinessService {
             id, business.getName(),business.getLogoUrl(),
                 userParser.toUserResponseDto(user.getUserId(), user),
                 business.getUsers().stream()
-                        .map( userInList -> userParser.toUserResponseDto(userInList.getId(), userInList.getUser())).toList()
+                        .map( userInList -> userParser.toUserResponseDto(userInList.getUser().getUserId(), userInList.getUser())).toList()
+        );
+    }
+
+    public BusinessResponseDto GetBussiness(Long id){
+        Optional<Business> businessInRepo = businessRepository.findById(id);
+
+        if(businessInRepo.isEmpty()){
+            throw new IllegalArgumentException("No existe un negocio con ese id");
+        }
+        Business business = businessInRepo.get();
+        return new BusinessResponseDto(
+                id, business.getName(),business.getLogoUrl(),
+                userParser.toUserResponseDto(business.getOwner().getUserId(), business.getOwner()),
+                business.getUsers().stream()
+                        .map( userInList -> userParser.toUserResponseDto(userInList.getUser().getUserId(), userInList.getUser())).toList()
         );
     }
 }

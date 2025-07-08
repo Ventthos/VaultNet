@@ -2,9 +2,7 @@ package com.ventthos.Vaultnet.service;
 
 import com.ventthos.Vaultnet.config.SecurityConfig;
 import com.ventthos.Vaultnet.domain.User;
-import com.ventthos.Vaultnet.dto.user.LoginUserDto;
-import com.ventthos.Vaultnet.dto.user.RegisterUserDto;
-import com.ventthos.Vaultnet.dto.user.UserResponseDto;
+import com.ventthos.Vaultnet.dto.user.*;
 import com.ventthos.Vaultnet.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,5 +83,25 @@ public class UserService {
         User loggedUser = userInRepo.get();
         return new UserResponseDto(loggedUser.getUserId(),loggedUser.getName(), loggedUser.getPaternalLastName(),
                 loggedUser.getMaternalLastName(), loggedUser.getEmail());
+    }
+
+    public UserBusinessesResponse getUserBusinesses(Long id) throws IllegalArgumentException{
+        // Vemos si existe el usuario
+        Optional<User> userInRepo = userRepository.findById(id);
+        // Si no existe mandamos error
+        if(userInRepo.isEmpty()){
+            throw new IllegalArgumentException("No existe un usuario con el ID proporcionado");
+        }
+
+        // Obtenemos el usuario existente
+        User user = userInRepo.get();
+        return new UserBusinessesResponse(
+                id,
+                user.getBusinesses().stream().map(userBusiness -> new UserBusinessInResponse(
+                        userBusiness.getBusiness().getBusinessId(),
+                        userBusiness.getBusiness().getName(),
+                        userBusiness.getBusiness().getLogoUrl()
+                )).toList()
+        );
     }
 }

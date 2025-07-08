@@ -30,4 +30,31 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegalArgument(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(new ApiResponse<>(
+                "Error",
+                e.getMessage(),
+                null
+        ));
+    }
+
+    @ExceptionHandler(IllegalAccessException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegalAccess(IllegalAccessException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse<>(
+                "Acceso denegado",
+                e.getMessage(),
+                null
+        ));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception e) {
+        return ResponseEntity.internalServerError().body(new ApiResponse<>(
+                "Error",
+                "Ocurrió un error inesperado.",
+                null
+        ));
+    }
 }
