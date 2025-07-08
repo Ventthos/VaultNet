@@ -2,6 +2,7 @@ package com.ventthos.Vaultnet.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,12 +30,12 @@ public class User {
     private String image;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Change> changes;
+    private List<Change> changes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserBusiness> businesses;
+    private List<UserBusiness> businesses = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Business> ownerships;
+    private List<Business> ownerships = new ArrayList<>();
 
 }
