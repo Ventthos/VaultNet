@@ -35,13 +35,12 @@ public class UserService {
         String hashedPassword = passwordEncoder.encode(newUser.getPassword());
 
         // Parseamos el user a guardar
-        User newParsedUser = User.builder()
-                .name(newUser.getName())
-                .paternalLastName(newUser.getPaternalLastname())
-                .maternalLastName(newUser.getMaternalLastname())
-                .email(newUser.getEmail())
-                .password(hashedPassword)
-                .build();
+        User newParsedUser = new User();
+        newParsedUser.setName(newUser.getName());
+        newParsedUser.setPaternalLastName(newUser.getPaternalLastname());
+        newParsedUser.setMaternalLastName(newUser.getMaternalLastname());
+        newParsedUser.setEmail(newUser.getEmail());
+        newParsedUser.setPassword(hashedPassword);
 
         // Lo guardamos y obtenemos el id
         try {
@@ -103,5 +102,22 @@ public class UserService {
                         userBusiness.getBusiness().getLogoUrl()
                 )).toList()
         );
+    }
+
+    public User getUserOrTrow(Long userId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isEmpty()){
+            throw new IllegalArgumentException("Usuario no encontrado");
+        }
+
+        return userOptional.get();
+    }
+
+    public void validateUserBelongsToBusiness(Long userId, Long businessId) throws IllegalAccessException {
+        if(getUserBusinesses(userId).businesses().stream()
+                .noneMatch(userBusinessInResponse -> userBusinessInResponse.businessId().equals(businessId)))
+        {
+            throw new IllegalAccessException("El usuario no pertenece al negocio con id " + businessId);
+        }
     }
 }

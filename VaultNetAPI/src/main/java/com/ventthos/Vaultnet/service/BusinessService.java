@@ -18,25 +18,21 @@ import java.util.*;
 @Service
 public class BusinessService {
     private final BusinessRepository businessRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final UserBusinessRepository userBusinessRepository;
     private final UserParser userParser;
 
-    public BusinessService(BusinessRepository businessRepository, UserRepository userRepository,
+    public BusinessService(BusinessRepository businessRepository, UserService userService,
                            UserBusinessRepository userBusinessRepository, UserParser userParser){
         this.businessRepository = businessRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.userBusinessRepository = userBusinessRepository;
         this.userParser = userParser;
     }
 
     public BusinessResponseDto CreateBusiness(CreateBusinessDto newBusiness, Long userId) throws IllegalArgumentException{
-        Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isEmpty()){
-            throw new IllegalArgumentException("Usuario no encontrado");
-        }
 
-        User user = userOptional.get();
+        User user = userService.getUserOrTrow(userId);
 
         // Crear instancia de negocio sin users todavía
         Business business = new Business();
@@ -74,17 +70,21 @@ public class BusinessService {
     }
 
     public BusinessResponseDto GetBussiness(Long id){
-        Optional<Business> businessInRepo = businessRepository.findById(id);
-
-        if(businessInRepo.isEmpty()){
-            throw new IllegalArgumentException("No existe un negocio con ese id");
-        }
-        Business business = businessInRepo.get();
+        Business business = getBusinessOrTrow(id);
         return new BusinessResponseDto(
                 id, business.getName(),business.getLogoUrl(),
                 userParser.toUserResponseDto(business.getOwner().getUserId(), business.getOwner()),
                 business.getUsers().stream()
                         .map( userInList -> userParser.toUserResponseDto(userInList.getUser().getUserId(), userInList.getUser())).toList()
         );
+    }
+
+    public Business getBusinessOrTrow(Long id){
+        Optional<Business> businessInRepo = businessRepository.findById(id);
+
+        if(businessInRepo.isEmpty()){
+            throw new IllegalArgumentException("No existe un negocio con ese id");
+        }
+        return businessInRepo.get();
     }
 }

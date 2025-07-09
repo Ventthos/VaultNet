@@ -49,4 +49,10 @@ public class JwtUtil {
     public Long extractUserId(String token) {
         return extractAllClaims(token).get("userId", Long.class);
     }
+
+    public Long extractUserIdFromHeader(String authHeader){
+        String token = authHeader.substring(7);
+
+        return extractUserId(token);
+    }
 }

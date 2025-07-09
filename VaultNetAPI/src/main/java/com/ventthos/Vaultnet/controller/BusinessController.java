@@ -5,6 +5,7 @@ import com.ventthos.Vaultnet.domain.Business;
 import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.dto.business.BusinessResponseDto;
 import com.ventthos.Vaultnet.dto.business.CreateBusinessDto;
+import com.ventthos.Vaultnet.dto.category.CategoryResponseDto;
 import com.ventthos.Vaultnet.dto.responses.ApiResponse;
 import com.ventthos.Vaultnet.dto.user.UserResponseDto;
 import com.ventthos.Vaultnet.service.BusinessService;
@@ -36,8 +37,7 @@ public class BusinessController {
             @RequestBody @Valid CreateBusinessDto businessDto) {
 
         // Extraer token y obtener ID del usuario
-        String token = authHeader.substring(7);
-        Long userId = jwtUtil.extractUserId(token);
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
 
         // Crear el negocio
         BusinessResponseDto businessResponse = businessService.CreateBusiness(businessDto, userId);
@@ -53,14 +53,9 @@ public class BusinessController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BusinessResponseDto>> getBusiness(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) throws IllegalAccessException {
         // Extraer token y obtener ID del usuario
-        String token = authHeader.substring(7);
-        Long userId = jwtUtil.extractUserId(token);
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
 
-        if(userService.getUserBusinesses(userId).businesses().stream()
-                .noneMatch(userBusinessInResponse -> userBusinessInResponse.businessId().equals(id)))
-        {
-            throw new IllegalAccessException("El usuario no pertenece al negocio con id " + id);
-        }
+        userService.validateUserBelongsToBusiness(userId, id);
 
         BusinessResponseDto businessResponse = businessService.GetBussiness(id);
         return ResponseEntity.ok(
@@ -70,5 +65,10 @@ public class BusinessController {
                         businessResponse
                 )
         );
+    }
+
+    @PostMapping("/{id}/categories")
+    public ResponseEntity<ApiResponse<CategoryResponseDto>> postCategory(){
+
     }
 }
