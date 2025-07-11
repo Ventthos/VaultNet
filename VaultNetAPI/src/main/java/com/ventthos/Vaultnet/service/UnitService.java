@@ -1,0 +1,86 @@
+package com.ventthos.Vaultnet.service;
+
+import com.ventthos.Vaultnet.domain.Business;
+import com.ventthos.Vaultnet.domain.Unit;
+import com.ventthos.Vaultnet.dto.unit.CreateUnitDto;
+import com.ventthos.Vaultnet.dto.unit.UnitResponseDto;
+import com.ventthos.Vaultnet.repository.UnitRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class UnitService {
+    private final UnitRepository unitRepository;
+    private final BusinessService businessService;
+
+    public UnitService(UnitRepository unitRepository, BusinessService businessService){
+        this.businessService = businessService;
+        this.unitRepository = unitRepository;
+    }
+
+    public UnitResponseDto createUnit(CreateUnitDto newUnitDto, Long businessId){
+        // Se obtiene el business
+        Business business = businessService.getBusinessOrTrow(businessId);
+
+        // Se crea el objeto
+        Unit newUnit = new Unit();
+        newUnit.setName(newUnitDto.name());
+        newUnit.setSymbol(newUnitDto.symbol());
+        newUnit.setBusiness(business);
+
+        // Se guarda
+        Long id = unitRepository.save(newUnit).getUnitId();
+
+        // Se actualiza la lista del negocio
+        business.getUnits().add(newUnit);
+
+        // Se crea la respuesta
+        return new UnitResponseDto(
+                id,
+                newUnit.getName(),
+                newUnit.getSymbol(),
+                businessId
+        );
+    }
+
+    public Unit getUnitOrTrow(Long unitId){
+        Optional<Unit> optionalUnit = unitRepository.findById(unitId);
+        if(optionalUnit.isEmpty()){
+            throw new IllegalArgumentException("No existe una unidad con ese id");
+        }
+        return optionalUnit.get();
+    }
+
+    public void confirmUnitIsFromBusinessOrTrow(Long businessId, Long unitId) throws IllegalAccessException {
+        Unit unit = getUnitOrTrow(unitId);
+
+        if(!unit.getBusiness().getBusinessId().equals(businessId)){
+            throw new IllegalAccessException("El id de la unidad proporcionada no pertenece al negocio.");
+        }
+    }
+
+    public List<UnitResponseDto> getUnitsFromBusiness(Long businessId){
+        Business business = businessService.getBusinessOrTrow(businessId);
+
+        return business.getUnits().stream().map(unit -> new UnitResponseDto(
+                unit.getUnitId(),
+                unit.getName(),
+                unit.getSymbol(),
+                unit.getBusiness().getBusinessId()
+        )).toList();
+    }
+
+    public UnitResponseDto getUnit(Long unitId){
+        Unit unit = getUnitOrTrow(unitId);
+
+        return new UnitResponseDto(
+                unit.getUnitId(),
+                unit.getName(),
+                unit.getSymbol(),
+                unit.getBusiness().getBusinessId()
+        );
+    }
+
+}

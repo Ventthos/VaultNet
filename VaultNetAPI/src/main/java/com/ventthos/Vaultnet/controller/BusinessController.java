@@ -8,9 +8,12 @@ import com.ventthos.Vaultnet.dto.business.CreateBusinessDto;
 import com.ventthos.Vaultnet.dto.category.CategoryResponseDto;
 import com.ventthos.Vaultnet.dto.category.CreateCategoryDto;
 import com.ventthos.Vaultnet.dto.responses.ApiResponse;
+import com.ventthos.Vaultnet.dto.unit.CreateUnitDto;
+import com.ventthos.Vaultnet.dto.unit.UnitResponseDto;
 import com.ventthos.Vaultnet.dto.user.UserResponseDto;
 import com.ventthos.Vaultnet.service.BusinessService;
 import com.ventthos.Vaultnet.service.CategoryService;
+import com.ventthos.Vaultnet.service.UnitService;
 import com.ventthos.Vaultnet.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +31,15 @@ public class BusinessController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final UnitService unitService;
 
     public BusinessController(BusinessService businessService, JwtUtil jwtUtil, UserService userService,
-                              CategoryService categoryService){
+                              CategoryService categoryService, UnitService unitService){
         this.businessService = businessService;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
         this.categoryService = categoryService;
+        this.unitService = unitService;
     }
 
     @PostMapping
@@ -133,6 +138,68 @@ public class BusinessController {
                         "Success",
                         "Categoría creada correctamente",
                         category
+                )
+        );
+    }
+
+    @PostMapping("/{id}/units")
+    public ResponseEntity<ApiResponse<UnitResponseDto>> createUnit(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody @Valid CreateUnitDto createUnitDto
+    ) throws IllegalAccessException {
+        // Extraer token y obtener ID del usuario
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
+        userService.validateUserBelongsToBusiness(userId, id);
+
+        UnitResponseDto unit = unitService.createUnit(createUnitDto, id);
+        return  ResponseEntity.ok(
+                new ApiResponse<>(
+                        "Success",
+                        "Unidad creada exitosamente",
+                        unit
+                )
+        );
+    }
+
+    @GetMapping("/{id}/units")
+    public ResponseEntity<ApiResponse<List<UnitResponseDto>>> getUnitsFromBusiness(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String authHeader
+    ) throws IllegalAccessException {
+        // Extraer token y obtener ID del usuario
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
+        userService.validateUserBelongsToBusiness(userId, id);
+
+        List<UnitResponseDto> units = unitService.getUnitsFromBusiness(id);
+
+        return  ResponseEntity.ok(
+                new ApiResponse<>(
+                        "Success",
+                        "Unidades obtenidas correctamente",
+                        units
+                )
+        );
+    }
+
+    @GetMapping("/{id}/units/{unitId}")
+    public ResponseEntity<ApiResponse<UnitResponseDto>> getUnit(
+            @PathVariable Long id,
+            @PathVariable Long unitId,
+            @RequestHeader("Authorization") String authHeader
+    ) throws IllegalAccessException {
+        // Extraer token y obtener ID del usuario
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
+        userService.validateUserBelongsToBusiness(userId, id);
+
+        unitService.confirmUnitIsFromBusinessOrTrow(id, unitId);
+
+        UnitResponseDto unit = unitService.getUnit(id);
+        return  ResponseEntity.ok(
+                new ApiResponse<>(
+                        "Success",
+                        "Unidad obtenida correctamente",
+                        unit
                 )
         );
     }
