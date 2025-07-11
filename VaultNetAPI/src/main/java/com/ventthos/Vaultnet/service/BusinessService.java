@@ -5,11 +5,9 @@ import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.domain.UserBusiness;
 import com.ventthos.Vaultnet.dto.business.BusinessResponseDto;
 import com.ventthos.Vaultnet.dto.business.CreateBusinessDto;
-import com.ventthos.Vaultnet.dto.user.UserResponseDto;
-import com.ventthos.Vaultnet.parsers.UserParser;
+import com.ventthos.Vaultnet.parsers.BusinessParser;
 import com.ventthos.Vaultnet.repository.BusinessRepository;
 import com.ventthos.Vaultnet.repository.UserBusinessRepository;
-import com.ventthos.Vaultnet.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,14 +18,14 @@ public class BusinessService {
     private final BusinessRepository businessRepository;
     private final UserService userService;
     private final UserBusinessRepository userBusinessRepository;
-    private final UserParser userParser;
+    private final BusinessParser businessParser;
 
     public BusinessService(BusinessRepository businessRepository, UserService userService,
-                           UserBusinessRepository userBusinessRepository, UserParser userParser){
+                           UserBusinessRepository userBusinessRepository, BusinessParser businessParser){
         this.businessRepository = businessRepository;
         this.userService = userService;
         this.userBusinessRepository = userBusinessRepository;
-        this.userParser = userParser;
+        this.businessParser = businessParser;
     }
 
     public BusinessResponseDto CreateBusiness(CreateBusinessDto newBusiness, Long userId) throws IllegalArgumentException{
@@ -61,22 +59,12 @@ public class BusinessService {
         user.getBusinesses().add(userBusiness);
         business.getUsers().add(userBusiness);
 
-        return new BusinessResponseDto(
-            id, business.getName(),business.getLogoUrl(),
-                userParser.toUserResponseDto(user.getUserId(), user),
-                business.getUsers().stream()
-                        .map( userInList -> userParser.toUserResponseDto(userInList.getUser().getUserId(), userInList.getUser())).toList()
-        );
+        return businessParser.toBusinessDto(id, business);
     }
 
     public BusinessResponseDto GetBussiness(Long id){
         Business business = getBusinessOrTrow(id);
-        return new BusinessResponseDto(
-                id, business.getName(),business.getLogoUrl(),
-                userParser.toUserResponseDto(business.getOwner().getUserId(), business.getOwner()),
-                business.getUsers().stream()
-                        .map( userInList -> userParser.toUserResponseDto(userInList.getUser().getUserId(), userInList.getUser())).toList()
-        );
+        return  businessParser.toBusinessDto(id, business);
     }
 
     public Business getBusinessOrTrow(Long id){

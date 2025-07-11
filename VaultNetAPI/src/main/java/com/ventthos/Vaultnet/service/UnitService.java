@@ -4,6 +4,7 @@ import com.ventthos.Vaultnet.domain.Business;
 import com.ventthos.Vaultnet.domain.Unit;
 import com.ventthos.Vaultnet.dto.unit.CreateUnitDto;
 import com.ventthos.Vaultnet.dto.unit.UnitResponseDto;
+import com.ventthos.Vaultnet.parsers.UnitParser;
 import com.ventthos.Vaultnet.repository.UnitRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ import java.util.Optional;
 public class UnitService {
     private final UnitRepository unitRepository;
     private final BusinessService businessService;
+    private final UnitParser unitParser;
 
-    public UnitService(UnitRepository unitRepository, BusinessService businessService){
+    public UnitService(UnitRepository unitRepository, BusinessService businessService, UnitParser unitParser){
         this.businessService = businessService;
         this.unitRepository = unitRepository;
+        this.unitParser = unitParser;
     }
 
     public UnitResponseDto createUnit(CreateUnitDto newUnitDto, Long businessId){
@@ -37,12 +40,7 @@ public class UnitService {
         business.getUnits().add(newUnit);
 
         // Se crea la respuesta
-        return new UnitResponseDto(
-                id,
-                newUnit.getName(),
-                newUnit.getSymbol(),
-                businessId
-        );
+        return unitParser.toUnitResponseDto(id, newUnit);
     }
 
     public Unit getUnitOrTrow(Long unitId){
@@ -64,23 +62,14 @@ public class UnitService {
     public List<UnitResponseDto> getUnitsFromBusiness(Long businessId){
         Business business = businessService.getBusinessOrTrow(businessId);
 
-        return business.getUnits().stream().map(unit -> new UnitResponseDto(
-                unit.getUnitId(),
-                unit.getName(),
-                unit.getSymbol(),
-                unit.getBusiness().getBusinessId()
-        )).toList();
+        return business.getUnits().stream().map(unit -> unitParser.toUnitResponseDto(unit.getUnitId(), unit)
+        ).toList();
     }
 
     public UnitResponseDto getUnit(Long unitId){
         Unit unit = getUnitOrTrow(unitId);
 
-        return new UnitResponseDto(
-                unit.getUnitId(),
-                unit.getName(),
-                unit.getSymbol(),
-                unit.getBusiness().getBusinessId()
-        );
+        return unitParser.toUnitResponseDto(unitId, unit);
     }
 
 }
