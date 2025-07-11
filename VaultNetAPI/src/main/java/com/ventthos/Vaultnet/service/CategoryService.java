@@ -5,6 +5,7 @@ import com.ventthos.Vaultnet.domain.Category;
 import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.dto.category.CategoryResponseDto;
 import com.ventthos.Vaultnet.dto.category.CreateCategoryDto;
+import com.ventthos.Vaultnet.parsers.CategoryParser;
 import com.ventthos.Vaultnet.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,12 @@ import java.util.Optional;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final BusinessService businessService;
+    private final CategoryParser categoryParser;
 
-    public CategoryService(CategoryRepository categoryRepository, BusinessService businessService){
+    public CategoryService(CategoryRepository categoryRepository, BusinessService businessService, CategoryParser categoryParser){
         this.categoryRepository = categoryRepository;
         this.businessService = businessService;
+        this.categoryParser = categoryParser;
     }
 
     public CategoryResponseDto createCategory(CreateCategoryDto newCategory, Long businessId){
@@ -37,12 +40,8 @@ public class CategoryService {
         // Actualizamos la lista de categorias del business
         business.getCategories().add(savedCategory);
 
-        return new CategoryResponseDto(
-                savedCategory.getCategoryId(),
-                category.getName(),
-                category.getColor(),
-                category.getBusiness().getBusinessId()
-        );
+        return categoryParser.toCategoryDto(savedCategory.getCategoryId(), category);
+
     }
 
     public List<CategoryResponseDto> getCategoriesFromBusiness(Long businessId){
@@ -51,38 +50,30 @@ public class CategoryService {
 
         // Parseamos cada una de las categorias
         return business.getCategories().stream().map(category ->
-             new CategoryResponseDto(
-                     category.getCategoryId(),
-                    category.getName(),
-                    category.getColor(),
-                    category.getBusiness().getBusinessId())
+             categoryParser.toCategoryDto(category.getCategoryId(), category)
         ).toList();
     }
 
-    public void confirmCategoryIsFromBusinessOrTrow(Long businessId, Long categoryId) throws IllegalAccessException{
+    public Category getCategoryOrThrow(Long categoryId){
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         if(categoryOptional.isEmpty()){
             throw new IllegalArgumentException("Categoría no encontrada");
         }
+        return categoryOptional.get();
+    }
 
-        if(!categoryOptional.get().getBusiness().getBusinessId().equals(businessId)){
+    public void confirmCategoryIsFromBusinessOrTrow(Long businessId, Long categoryId) throws IllegalAccessException{
+        Category category = getCategoryOrThrow(categoryId);
+
+        if(!category.getBusiness().getBusinessId().equals(businessId)){
             throw new IllegalAccessException("No se tiene permiso para ver esta categoria");
         }
     }
 
     public CategoryResponseDto getCategory(Long categoryId){
-        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-        if(categoryOptional.isEmpty()){
-            throw new IllegalArgumentException("Categoría no encontrada");
-        }
 
-        Category category = categoryOptional.get();
+        Category category = getCategoryOrThrow(categoryId);
 
-        return new CategoryResponseDto(
-                category.getCategoryId(),
-                category.getName(),
-                category.getColor(),
-                category.getBusiness().getBusinessId()
-        );
+        return categoryParser.toCategoryDto(category.getCategoryId(), category);
     }
 }
