@@ -4,6 +4,8 @@ import com.ventthos.Vaultnet.domain.Business;
 import com.ventthos.Vaultnet.domain.Unit;
 import com.ventthos.Vaultnet.dto.unit.CreateUnitDto;
 import com.ventthos.Vaultnet.dto.unit.UnitResponseDto;
+import com.ventthos.Vaultnet.exceptions.ApiException;
+import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.parsers.UnitParser;
 import com.ventthos.Vaultnet.repository.UnitRepository;
 import org.springframework.stereotype.Service;
@@ -46,16 +48,16 @@ public class UnitService {
     public Unit getUnitOrTrow(Long unitId){
         Optional<Unit> optionalUnit = unitRepository.findById(unitId);
         if(optionalUnit.isEmpty()){
-            throw new IllegalArgumentException("No existe una unidad con ese id");
+            throw new ApiException(Code.UNIT_NOT_FOUND);
         }
         return optionalUnit.get();
     }
 
-    public void confirmUnitIsFromBusinessOrTrow(Long businessId, Long unitId) throws IllegalAccessException {
+    public void confirmUnitIsFromBusinessOrTrow(Long businessId, Long unitId) throws ApiException {
         Unit unit = getUnitOrTrow(unitId);
 
         if(!unit.getBusiness().getBusinessId().equals(businessId)){
-            throw new IllegalAccessException("El id de la unidad proporcionada no pertenece al negocio.");
+            throw new ApiException(Code.UNIT_NOT_FOUND);
         }
     }
 

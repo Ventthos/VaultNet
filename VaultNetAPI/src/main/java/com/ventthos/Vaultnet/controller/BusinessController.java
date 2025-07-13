@@ -1,8 +1,6 @@
 package com.ventthos.Vaultnet.controller;
 
 import com.ventthos.Vaultnet.config.JwtUtil;
-import com.ventthos.Vaultnet.domain.Business;
-import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.dto.business.BusinessResponseDto;
 import com.ventthos.Vaultnet.dto.business.CreateBusinessDto;
 import com.ventthos.Vaultnet.dto.category.CategoryResponseDto;
@@ -10,19 +8,18 @@ import com.ventthos.Vaultnet.dto.category.CreateCategoryDto;
 import com.ventthos.Vaultnet.dto.responses.ApiResponse;
 import com.ventthos.Vaultnet.dto.unit.CreateUnitDto;
 import com.ventthos.Vaultnet.dto.unit.UnitResponseDto;
-import com.ventthos.Vaultnet.dto.user.UserResponseDto;
+import com.ventthos.Vaultnet.exceptions.ApiException;
+import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.service.BusinessService;
 import com.ventthos.Vaultnet.service.CategoryService;
 import com.ventthos.Vaultnet.service.UnitService;
 import com.ventthos.Vaultnet.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/business")
@@ -54,15 +51,16 @@ public class BusinessController {
         BusinessResponseDto businessResponse = businessService.CreateBusiness(businessDto, userId);
 
         return ResponseEntity
-                .ok(new ApiResponse<>(
+                .created(URI.create("/business/"+userId)).body(new ApiResponse<>(
                         "Success",
-                        "Negocio creado correctamente",
+                        Code.BUSINESS_CREATED.name(),
+                        Code.BUSINESS_CREATED.getDefaultMessage(),
                         businessResponse
                 ));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<BusinessResponseDto>> getBusiness(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) throws IllegalAccessException {
+    public ResponseEntity<ApiResponse<BusinessResponseDto>> getBusiness(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
         // Extraer token y obtener ID del usuario
         Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
 
@@ -72,7 +70,8 @@ public class BusinessController {
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
-                        "Negocio obtenido correctamente",
+                        Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(),
                         businessResponse
                 )
         );
@@ -82,7 +81,7 @@ public class BusinessController {
     public ResponseEntity<ApiResponse<CategoryResponseDto>> postCategory(@PathVariable Long id,
                                                                          @RequestHeader("Authorization") String authHeader,
                                                                          @RequestBody @Valid CreateCategoryDto newCategoryBody)
-    throws IllegalAccessException{
+    {
         // Extraer token y obtener ID del usuario
         Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
 
@@ -92,7 +91,8 @@ public class BusinessController {
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
-                        "Categoría creada correctamente",
+                        Code.CATEGORY_CREATED.name(),
+                        Code.CATEGORY_CREATED.getDefaultMessage(),
                         categoryResponse
                 )
         );
@@ -113,7 +113,8 @@ public class BusinessController {
         return  ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
-                        "Categoría creada correctamente",
+                        Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(),
                         categories
                 )
         );
@@ -136,7 +137,8 @@ public class BusinessController {
         return  ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
-                        "Categoría creada correctamente",
+                        Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(),
                         category
                 )
         );
@@ -156,7 +158,8 @@ public class BusinessController {
         return  ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
-                        "Unidad creada exitosamente",
+                        Code.UNIT_CREATED.name(),
+                        Code.UNIT_CREATED.getDefaultMessage(),
                         unit
                 )
         );
@@ -176,7 +179,8 @@ public class BusinessController {
         return  ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
-                        "Unidades obtenidas correctamente",
+                        Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(),
                         units
                 )
         );
@@ -187,7 +191,7 @@ public class BusinessController {
             @PathVariable Long id,
             @PathVariable Long unitId,
             @RequestHeader("Authorization") String authHeader
-    ) throws IllegalAccessException {
+    ) {
         // Extraer token y obtener ID del usuario
         Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
         userService.validateUserBelongsToBusiness(userId, id);
@@ -198,7 +202,8 @@ public class BusinessController {
         return  ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
-                        "Unidad obtenida correctamente",
+                        Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(),
                         unit
                 )
         );

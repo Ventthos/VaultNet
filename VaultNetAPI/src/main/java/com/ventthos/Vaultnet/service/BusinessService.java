@@ -5,6 +5,8 @@ import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.domain.UserBusiness;
 import com.ventthos.Vaultnet.dto.business.BusinessResponseDto;
 import com.ventthos.Vaultnet.dto.business.CreateBusinessDto;
+import com.ventthos.Vaultnet.exceptions.ApiException;
+import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.parsers.BusinessParser;
 import com.ventthos.Vaultnet.repository.BusinessRepository;
 import com.ventthos.Vaultnet.repository.UserBusinessRepository;
@@ -28,7 +30,7 @@ public class BusinessService {
         this.businessParser = businessParser;
     }
 
-    public BusinessResponseDto CreateBusiness(CreateBusinessDto newBusiness, Long userId) throws IllegalArgumentException{
+    public BusinessResponseDto CreateBusiness(CreateBusinessDto newBusiness, Long userId) throws ApiException{
 
         User user = userService.getUserOrTrow(userId);
 
@@ -71,7 +73,7 @@ public class BusinessService {
         Optional<Business> businessInRepo = businessRepository.findById(id);
 
         if(businessInRepo.isEmpty()){
-            throw new IllegalArgumentException("No existe un negocio con ese id");
+            throw new ApiException(Code.BUSINESS_NOT_FOUND);
         }
         return businessInRepo.get();
     }

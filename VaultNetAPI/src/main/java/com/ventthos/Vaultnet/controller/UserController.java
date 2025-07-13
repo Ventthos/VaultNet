@@ -7,6 +7,7 @@ import com.ventthos.Vaultnet.dto.responses.ApiResponseWithToken;
 import com.ventthos.Vaultnet.dto.user.LoginUserDto;
 import com.ventthos.Vaultnet.dto.user.RegisterUserDto;
 import com.ventthos.Vaultnet.dto.user.UserResponseDto;
+import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -34,14 +35,15 @@ public class UserController {
 
         return ResponseEntity
                 .created(location)
-                .body(new ApiResponse<>("Success", "Usuario creado exitosamente", userResponseDto));
+                .body(new ApiResponse<>("Success", Code.USER_SAVED.name(), Code.USER_SAVED.getDefaultMessage(),
+                        userResponseDto));
     }
 
     @PostMapping("auth/login")
     public ResponseEntity<ApiResponseWithToken<UserResponseDto>> Login(@RequestBody @Valid LoginUserDto loginUser){
         UserResponseDto user = userService.loginUser(loginUser);
         return ResponseEntity.ok(
-                new ApiResponseWithToken<>("Success", "Sesión iniciada correctamente", user,
+                new ApiResponseWithToken<>("Success", Code.LOGGED_IN.name(),Code.LOGGED_IN.getDefaultMessage(), user,
                         jwtUtil.generateToken(user.email(), user.id()))
         );
     }
@@ -50,7 +52,8 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserResponseDto>> FindUserById(@PathVariable Long id){
         UserResponseDto user = userService.GetUserById(id);
         return ResponseEntity.ok(
-                new ApiResponse<>("Success", "Usuario obtenido", user)
+                new ApiResponse<>("Success", Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(), user)
         );
     }
 }

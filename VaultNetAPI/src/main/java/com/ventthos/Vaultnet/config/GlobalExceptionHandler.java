@@ -1,6 +1,8 @@
 package com.ventthos.Vaultnet.config;
 
 import com.ventthos.Vaultnet.dto.responses.ApiResponse;
+import com.ventthos.Vaultnet.exceptions.ApiException;
+import com.ventthos.Vaultnet.exceptions.Code;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -25,36 +27,30 @@ public class GlobalExceptionHandler {
 
         ApiResponse<List<String>> response = new ApiResponse<>(
                 "Error",
-                "Error de validación",
+                Code.VALIDATION_ERROR.name(),
+                Code.VALIDATION_ERROR.getDefaultMessage(),
                 errores
         );
 
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Object>> handleIllegalArgument(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().body(new ApiResponse<>(
-                "Error",
-                e.getMessage(),
-                null
-        ));
-    }
-
-    @ExceptionHandler(IllegalAccessException.class)
-    public ResponseEntity<ApiResponse<Object>> handleIllegalAccess(IllegalAccessException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse<>(
-                "Acceso denegado",
-                e.getMessage(),
-                null
-        ));
-    }
-
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleNotFound(NoHandlerFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(
                 "Ruta no encontrada",
-                "La ruta solicitada no existe: " + ex.getRequestURL(),
+                Code.ROUTE_NOT_FOUND.name(),
+                Code.ROUTE_NOT_FOUND.getDefaultMessage() + ex.getRequestURL(),
+                null
+        ));
+    }
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ApiResponse<Object>> handleApiError(ApiException ex){
+        return ResponseEntity.status(ex.getHttpCode()).body(new ApiResponse<>(
+                "Error",
+                ex.getCode().name(),
+                ex.getMessage(),
                 null
         ));
     }
@@ -63,7 +59,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception e) {
         return ResponseEntity.internalServerError().body(new ApiResponse<>(
                 "Error",
-                "Ocurrió un error inesperado.",
+                Code.INTERNAL_ERROR.name(),
+                Code.INTERNAL_ERROR.getDefaultMessage(),
                 null
         ));
     }

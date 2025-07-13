@@ -2,7 +2,9 @@ package com.ventthos.Vaultnet.parsers;
 
 import com.ventthos.Vaultnet.domain.Business;
 import com.ventthos.Vaultnet.dto.business.BusinessResponseDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BusinessParser {
 
     private final UserParser userParser;

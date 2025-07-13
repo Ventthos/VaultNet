@@ -3,6 +3,9 @@ package com.ventthos.Vaultnet.service;
 import com.ventthos.Vaultnet.config.SecurityConfig;
 import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.dto.user.*;
+import com.ventthos.Vaultnet.exceptions.ApiException;
+import com.ventthos.Vaultnet.exceptions.Code;
+import com.ventthos.Vaultnet.parsers.UserParser;
 import com.ventthos.Vaultnet.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,21 +17,23 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserParser userParser;
 
     // Se necesita del user repository y security config para poder acceder a los usuarios
     // y también para poder encriptar la contraseña
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserParser userParser){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userParser = userParser;
     }
 
     public UserResponseDto registerUser(RegisterUserDto newUser) throws IllegalArgumentException{
         // No hay users con el mismo email
         if(userRepository.findByEmail(newUser.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Un usuario con ese email ya se encuentra registrado");
+            throw new ApiException(Code.EMAIL_ALREADY_REGISTERED);
         }// Ni users con contraseñas menores a seis caracteres
         else if(newUser.getPassword().length() < 6){
-            throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres");
+            throw new ApiException(Code.INVALID_PASSWORD);
         }
 
         // Hasheamos la contraseña por seguridad
@@ -47,11 +52,10 @@ public class UserService {
             Long id = userRepository.save(newParsedUser).getUserId();
 
             // Devolvemos el nuevo user
-            return new UserResponseDto(id,newParsedUser.getName(), newParsedUser.getPaternalLastName(),
-                    newParsedUser.getMaternalLastName(), newParsedUser.getEmail());
+            return userParser.toUserResponseDto(id, newParsedUser);
 
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("No se pudo guardar el elemento");
+            throw new ApiException(Code.CAN_NOT_SAVE);
         }
     }
 
@@ -59,41 +63,27 @@ public class UserService {
         // Vemos si existe el usuario
         Optional<User> userInRepo = userRepository.findByEmail(loginUser.email());
         if(userInRepo.isEmpty()){
-            throw new IllegalArgumentException("No existe una cuenta con el correo proporcionado.");
+            throw new ApiException(Code.USER_NOT_FOUND);
         }
         // Vemos si la contraseña coincide
         if(!passwordEncoder.matches(loginUser.password(), userInRepo.get().getPassword())){
-            throw new IllegalArgumentException("La contraseña proporcionada no coincide.");
+            throw new ApiException(Code.INVALID_CREDENTIALS);
         }
         // Obtenemos el usuario
         User loggedUser = userInRepo.get();
-        return new UserResponseDto(loggedUser.getUserId(),loggedUser.getName(), loggedUser.getPaternalLastName(),
-                loggedUser.getMaternalLastName(), loggedUser.getEmail());
+        return userParser.toUserResponseDto(loggedUser.getUserId(), loggedUser);
     }
 
     public UserResponseDto GetUserById(Long id) throws IllegalArgumentException{
-        // Vemos si existe el usuario
-        Optional<User> userInRepo = userRepository.findById(id);
-        // Si no existe mandamos error
-        if(userInRepo.isEmpty()){
-            throw new IllegalArgumentException("No existe un usuario con el ID proporcionado");
-        }
         // Obtenemos el usuario si existe
-        User loggedUser = userInRepo.get();
-        return new UserResponseDto(loggedUser.getUserId(),loggedUser.getName(), loggedUser.getPaternalLastName(),
-                loggedUser.getMaternalLastName(), loggedUser.getEmail());
+        User loggedUser = getUserOrTrow(id);
+        return userParser.toUserResponseDto(id, loggedUser);
     }
 
     public UserBusinessesResponse getUserBusinesses(Long id) throws IllegalArgumentException{
-        // Vemos si existe el usuario
-        Optional<User> userInRepo = userRepository.findById(id);
-        // Si no existe mandamos error
-        if(userInRepo.isEmpty()){
-            throw new IllegalArgumentException("No existe un usuario con el ID proporcionado");
-        }
 
         // Obtenemos el usuario existente
-        User user = userInRepo.get();
+        User user = getUserOrTrow(id);
         return new UserBusinessesResponse(
                 id,
                 user.getBusinesses().stream().map(userBusiness -> new UserBusinessInResponse(
@@ -107,17 +97,17 @@ public class UserService {
     public User getUserOrTrow(Long userId){
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isEmpty()){
-            throw new IllegalArgumentException("Usuario no encontrado");
+            throw new ApiException(Code.USER_NOT_FOUND);
         }
 
         return userOptional.get();
     }
 
-    public void validateUserBelongsToBusiness(Long userId, Long businessId) throws IllegalAccessException {
+    public void validateUserBelongsToBusiness(Long userId, Long businessId) {
         if(getUserBusinesses(userId).businesses().stream()
                 .noneMatch(userBusinessInResponse -> userBusinessInResponse.businessId().equals(businessId)))
         {
-            throw new IllegalAccessException("El usuario no pertenece al negocio con id " + businessId);
+            throw new ApiException(Code.ACCESS_DENIED);
         }
     }
 }

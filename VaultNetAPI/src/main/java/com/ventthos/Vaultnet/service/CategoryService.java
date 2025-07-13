@@ -5,6 +5,8 @@ import com.ventthos.Vaultnet.domain.Category;
 import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.dto.category.CategoryResponseDto;
 import com.ventthos.Vaultnet.dto.category.CreateCategoryDto;
+import com.ventthos.Vaultnet.exceptions.ApiException;
+import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.parsers.CategoryParser;
 import com.ventthos.Vaultnet.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -57,7 +59,7 @@ public class CategoryService {
     public Category getCategoryOrThrow(Long categoryId){
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         if(categoryOptional.isEmpty()){
-            throw new IllegalArgumentException("Categoría no encontrada");
+            throw new ApiException(Code.CATEGORY_NOT_FOUND);
         }
         return categoryOptional.get();
     }
@@ -66,7 +68,7 @@ public class CategoryService {
         Category category = getCategoryOrThrow(categoryId);
 
         if(!category.getBusiness().getBusinessId().equals(businessId)){
-            throw new IllegalAccessException("No se tiene permiso para ver esta categoria");
+            throw new ApiException(Code.CATEGORY_NOT_FOUND);
         }
     }
 
