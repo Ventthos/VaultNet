@@ -6,5 +6,6 @@ public record UserResponseDto (
     String name,
     String paternalLastname,
     String maternalLastname,
-    String email
+    String email,
+    String image
 ){}

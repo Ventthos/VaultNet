@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class UserParser {
     public UserResponseDto toUserResponseDto(Long id, User user){
         return new UserResponseDto(id, user.getName(), user.getPaternalLastName(),
-                user.getMaternalLastName(), user.getEmail());
+                user.getMaternalLastName(), user.getEmail(), user.getImage());
     }
 }

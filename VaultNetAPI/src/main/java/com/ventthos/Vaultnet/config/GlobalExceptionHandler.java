@@ -64,4 +64,14 @@ public class GlobalExceptionHandler {
                 null
         ));
     }
+
+    @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Object>> handleFileTooBig(Exception e){
+        return ResponseEntity.internalServerError().body(new ApiResponse<>(
+                "Error",
+                Code.FILE_TOO_BIG.name(),
+                Code.FILE_TOO_BIG.getDefaultMessage(),
+                null
+        ));
+    }
 }

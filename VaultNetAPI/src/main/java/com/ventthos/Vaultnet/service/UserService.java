@@ -1,5 +1,7 @@
 package com.ventthos.Vaultnet.service;
 
+import com.ventthos.Vaultnet.config.FileRoutes;
+import com.ventthos.Vaultnet.config.FileStorageService;
 import com.ventthos.Vaultnet.config.SecurityConfig;
 import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.dto.user.*;
@@ -10,6 +12,7 @@ import com.ventthos.Vaultnet.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -18,16 +21,27 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserParser userParser;
+    private final FileStorageService fileStorageService;
 
     // Se necesita del user repository y security config para poder acceder a los usuarios
     // y también para poder encriptar la contraseña
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserParser userParser){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserParser userParser,
+                       FileStorageService fileStorageService){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userParser = userParser;
+        this.fileStorageService = fileStorageService;
     }
 
-    public UserResponseDto registerUser(RegisterUserDto newUser) throws IllegalArgumentException{
+    public UserResponseDto registerUser(RegisterUserDto newUser, MultipartFile imageFile) throws IllegalArgumentException{
+        // Se sube la imagen
+        String imagePath = null;
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Guardar la imagen
+            imagePath = fileStorageService.save(imageFile, FileRoutes.USERS);
+        }
+
         // No hay users con el mismo email
         if(userRepository.findByEmail(newUser.getEmail()).isPresent()) {
             throw new ApiException(Code.EMAIL_ALREADY_REGISTERED);
@@ -46,6 +60,7 @@ public class UserService {
         newParsedUser.setMaternalLastName(newUser.getMaternalLastname());
         newParsedUser.setEmail(newUser.getEmail());
         newParsedUser.setPassword(hashedPassword);
+        newParsedUser.setImage(imagePath);
 
         // Lo guardamos y obtenemos el id
         try {

@@ -12,6 +12,7 @@ import com.ventthos.Vaultnet.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 
@@ -27,8 +28,11 @@ public class UserController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<ApiResponse<UserResponseDto>> RegisterUser(@RequestBody @Valid RegisterUserDto newUser){
-        UserResponseDto userResponseDto = userService.registerUser(newUser);
+    public ResponseEntity<ApiResponse<UserResponseDto>> RegisterUser(
+            @ModelAttribute @Valid RegisterUserDto newUser,
+            @RequestPart(value = "image", required = false)MultipartFile imageFile
+            ){
+        UserResponseDto userResponseDto = userService.registerUser(newUser, imageFile);
 
         // Construir la URI del nuevo recurso
         URI location = URI.create("/user/" + userResponseDto.id());
