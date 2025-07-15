@@ -1,5 +1,7 @@
 package com.ventthos.Vaultnet.service;
 
+import com.ventthos.Vaultnet.config.FileRoutes;
+import com.ventthos.Vaultnet.config.FileStorageService;
 import com.ventthos.Vaultnet.domain.Business;
 import com.ventthos.Vaultnet.domain.User;
 import com.ventthos.Vaultnet.domain.UserBusiness;
@@ -11,6 +13,7 @@ import com.ventthos.Vaultnet.parsers.BusinessParser;
 import com.ventthos.Vaultnet.repository.BusinessRepository;
 import com.ventthos.Vaultnet.repository.UserBusinessRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -21,23 +24,28 @@ public class BusinessService {
     private final UserService userService;
     private final UserBusinessRepository userBusinessRepository;
     private final BusinessParser businessParser;
+    private final FileStorageService fileStorageService;
 
     public BusinessService(BusinessRepository businessRepository, UserService userService,
-                           UserBusinessRepository userBusinessRepository, BusinessParser businessParser){
+                           UserBusinessRepository userBusinessRepository, BusinessParser businessParser,
+                           FileStorageService fileStorageService){
         this.businessRepository = businessRepository;
         this.userService = userService;
         this.userBusinessRepository = userBusinessRepository;
         this.businessParser = businessParser;
+        this.fileStorageService = fileStorageService;
     }
 
-    public BusinessResponseDto CreateBusiness(CreateBusinessDto newBusiness, Long userId) throws ApiException{
+    public BusinessResponseDto CreateBusiness(CreateBusinessDto newBusiness, Long userId, MultipartFile image) throws ApiException{
 
         User user = userService.getUserOrTrow(userId);
+
+        String imageRoute = fileStorageService.save(image, FileRoutes.BUSINESS);
 
         // Crear instancia de negocio sin users todavía
         Business business = new Business();
         business.setName(newBusiness.name());
-        business.setLogoUrl(newBusiness.logoUrl());
+        business.setLogoUrl(imageRoute);
         business.setOwner(user);
 
         // Guardar primero el negocio para que tenga ID

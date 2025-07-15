@@ -16,6 +16,7 @@ import com.ventthos.Vaultnet.service.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.util.List;
@@ -43,7 +44,8 @@ public class BusinessController {
     @PostMapping
     public ResponseEntity<ApiResponse<BusinessResponseDto>> createBusiness(
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody @Valid CreateBusinessDto businessDto) {
+            @ModelAttribute @Valid CreateBusinessDto businessDto,
+            @RequestPart(value = "image",required = false)MultipartFile image) {
 
         // Extraer token y obtener ID del usuario
         Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
