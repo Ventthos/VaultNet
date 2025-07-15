@@ -57,7 +57,7 @@ public class UnitService {
         Unit unit = getUnitOrTrow(unitId);
 
         if(!unit.getBusiness().getBusinessId().equals(businessId)){
-            throw new ApiException(Code.UNIT_NOT_FOUND);
+            throw new ApiException(Code.ACCESS_DENIED);
         }
     }
 

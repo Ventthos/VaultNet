@@ -21,7 +21,9 @@ public enum Code {
     UNIT_CREATED("Unidad creada", HttpStatus.CREATED),
     BUSINESS_CREATED("Negocio creado", HttpStatus.CREATED),
     LOGGED_IN("Sesión iniciada correctamente", HttpStatus.OK),
-    ROUTE_NOT_FOUND("La ruta solicitada no existe: ", HttpStatus.NOT_FOUND);
+    ROUTE_NOT_FOUND("La ruta solicitada no existe: ", HttpStatus.NOT_FOUND),
+    PRODUCT_CREATED("Producto creado exitosamente", HttpStatus.CREATED),
+    PRODUCT_NOT_FOUND("No se encontró el producto", HttpStatus.NOT_FOUND);
 
     private final String defaultMessage;
     private final HttpStatus httpStatus;

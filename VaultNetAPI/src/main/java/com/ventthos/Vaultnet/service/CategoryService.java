@@ -68,7 +68,7 @@ public class CategoryService {
         Category category = getCategoryOrThrow(categoryId);
 
         if(!category.getBusiness().getBusinessId().equals(businessId)){
-            throw new ApiException(Code.CATEGORY_NOT_FOUND);
+            throw new ApiException(Code.ACCESS_DENIED);
         }
     }
 
