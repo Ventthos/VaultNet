@@ -1,5 +1,7 @@
 package com.ventthos.Vaultnet.service;
 
+import com.ventthos.Vaultnet.config.FileRoutes;
+import com.ventthos.Vaultnet.config.FileStorageService;
 import com.ventthos.Vaultnet.domain.Business;
 import com.ventthos.Vaultnet.domain.Category;
 import com.ventthos.Vaultnet.domain.Product;
@@ -11,8 +13,10 @@ import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.parsers.ProductParser;
 import com.ventthos.Vaultnet.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -22,17 +26,27 @@ public class ProductService {
     private final CategoryService categoryService;
     private final UnitService unitService;
     private final ProductParser productParser;
+    private final FileStorageService fileStorageService;
 
     public ProductService(ProductRepository productRepository, BusinessService businessService, CategoryService categoryService,
-    UnitService unitService, ProductParser productParser){
+    UnitService unitService, ProductParser productParser, FileStorageService fileStorageService){
         this.productRepository = productRepository;
         this.businessService = businessService;
         this.categoryService = categoryService;
         this.unitService = unitService;
         this.productParser = productParser;
+        this.fileStorageService = fileStorageService;
     }
 
-    public ProductResponseDto createProduct(CreateProductDto newProductDto, Long businessId){
+    public ProductResponseDto createProduct(CreateProductDto newProductDto, Long businessId, MultipartFile imageFile){
+
+        String imagePath = null;
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Guardar la imagen
+            imagePath = fileStorageService.save(imageFile, FileRoutes.PRODUCTS);
+        }
+
         // Buscamos los componentes reales
         Business business = businessService.getBusinessOrTrow(businessId);
         Category category = categoryService.getCategoryOrThrow(newProductDto.categoryId());
@@ -43,8 +57,8 @@ public class ProductService {
         newProduct.setName(newProductDto.name());
         newProduct.setBusiness(business);
         newProduct.setDescription(newProductDto.description());
-        newProduct.setImage(newProductDto.image());
-        newProduct.setQuantity(newProductDto.quantity());
+        newProduct.setImage(imagePath);
+        newProduct.setQuantity(Objects.requireNonNullElse(newProductDto.quantity(), 0));
         newProduct.setUnit(unit);
         newProduct.setCategory(category);
 

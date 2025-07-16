@@ -25,5 +25,9 @@ public class Change {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private String changes;
+    @Lob
+    private String oldValuesJson;
+
+    @Lob
+    private String newValuesJson;
 }

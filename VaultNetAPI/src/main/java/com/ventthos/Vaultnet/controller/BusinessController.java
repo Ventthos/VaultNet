@@ -5,6 +5,7 @@ import com.ventthos.Vaultnet.dto.business.BusinessResponseDto;
 import com.ventthos.Vaultnet.dto.business.CreateBusinessDto;
 import com.ventthos.Vaultnet.dto.category.CategoryResponseDto;
 import com.ventthos.Vaultnet.dto.category.CreateCategoryDto;
+import com.ventthos.Vaultnet.dto.change.ChangeResponseDto;
 import com.ventthos.Vaultnet.dto.products.CreateProductDto;
 import com.ventthos.Vaultnet.dto.products.ProductResponseDto;
 import com.ventthos.Vaultnet.dto.responses.ApiResponse;
@@ -30,15 +31,18 @@ public class BusinessController {
     private final CategoryService categoryService;
     private final UnitService unitService;
     private final ProductService productService;
+    private final ChangeService changeService;
 
     public BusinessController(BusinessService businessService, JwtUtil jwtUtil, UserService userService,
-                              CategoryService categoryService, UnitService unitService, ProductService productService){
+                              CategoryService categoryService, UnitService unitService, ProductService productService,
+                              ChangeService changeService){
         this.businessService = businessService;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
         this.categoryService = categoryService;
         this.unitService = unitService;
         this.productService = productService;
+        this.changeService = changeService;
     }
 
     @PostMapping
@@ -51,7 +55,7 @@ public class BusinessController {
         Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
 
         // Crear el negocio
-        BusinessResponseDto businessResponse = businessService.CreateBusiness(businessDto, userId);
+        BusinessResponseDto businessResponse = businessService.CreateBusiness(businessDto, userId, image);
 
         return ResponseEntity
                 .created(URI.create("/business/"+userId)).body(new ApiResponse<>(
@@ -216,7 +220,8 @@ public class BusinessController {
     public ResponseEntity<ApiResponse<ProductResponseDto>> createProduct(
             @PathVariable Long id,
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody @Valid CreateProductDto productDto
+            @ModelAttribute @Valid CreateProductDto productDto,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) throws IllegalAccessException {
         // Extraer token y obtener ID del usuario
         Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
@@ -225,7 +230,7 @@ public class BusinessController {
         unitService.confirmUnitIsFromBusinessOrTrow(id, productDto.unitId());
         categoryService.confirmCategoryIsFromBusinessOrTrow(id, productDto.categoryId());
 
-        ProductResponseDto responseDto = productService.createProduct(productDto, id);
+        ProductResponseDto responseDto = productService.createProduct(productDto, id, imageFile);
         return  ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
@@ -269,6 +274,29 @@ public class BusinessController {
         productService.confirmProductIsFromBusinessOrThrow(id, productId);
 
         ProductResponseDto responseDto = productService.getProduct(productId);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        "Success",
+                        Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(),
+                        responseDto
+                )
+        );
+    }
+
+    @GetMapping("/{id}/products/{productId}/changes")
+    public ResponseEntity<ApiResponse<List<ChangeResponseDto>>> getChangesInProduct(
+            @PathVariable Long id,
+            @PathVariable Long productId,
+            @RequestHeader("Authorization") String authHeader
+    ){
+        // Extraer token y obtener ID del usuario
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
+        userService.validateUserBelongsToBusiness(userId, id);
+        productService.confirmProductIsFromBusinessOrThrow(id, productId);
+
+        List<ChangeResponseDto> responseDto = changeService.getChangesFromProduct(productId);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(

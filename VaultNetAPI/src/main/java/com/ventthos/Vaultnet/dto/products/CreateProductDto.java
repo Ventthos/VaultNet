@@ -10,9 +10,8 @@ public record CreateProductDto(
         @Length(max = 100, message = "El campo name no puede tener más de 100 caracteres")
         String name,
         String description,
-        String image,
         @Min(value = 0, message = "La cantidad no puede ser menor a 0")
-        int quantity,
+        Integer quantity,
         @NotNull(message = "Se necesita el campo unitId")
         Long unitId,
         @NotNull(message = "Se necesita el campo categoryId")

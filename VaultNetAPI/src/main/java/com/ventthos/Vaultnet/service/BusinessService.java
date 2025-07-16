@@ -36,16 +36,21 @@ public class BusinessService {
         this.fileStorageService = fileStorageService;
     }
 
-    public BusinessResponseDto CreateBusiness(CreateBusinessDto newBusiness, Long userId, MultipartFile image) throws ApiException{
+    public BusinessResponseDto CreateBusiness(CreateBusinessDto newBusiness, Long userId, MultipartFile imageFile) throws ApiException{
 
         User user = userService.getUserOrTrow(userId);
 
-        String imageRoute = fileStorageService.save(image, FileRoutes.BUSINESS);
+        String imagePath = null;
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Guardar la imagen
+            imagePath = fileStorageService.save(imageFile, FileRoutes.BUSINESS);
+        }
 
         // Crear instancia de negocio sin users todavía
         Business business = new Business();
         business.setName(newBusiness.name());
-        business.setLogoUrl(imageRoute);
+        business.setLogoUrl(imagePath);
         business.setOwner(user);
 
         // Guardar primero el negocio para que tenga ID

@@ -7,7 +7,7 @@ public enum FileRoutes {
 
     USERS("users/"),
     BUSINESS("business/"),
-    PRODUCTS(FileRoutes.BUSINESS.getRoute()+"products");
+    PRODUCTS("products/");
 
     private final String route;
 
