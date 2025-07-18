@@ -18,6 +18,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 @Service
@@ -49,7 +52,8 @@ public class ProductService {
 
     }
 
-    public ProductResponseDto createProduct(CreateProductDto newProductDto, Long businessId, MultipartFile imageFile){
+    public ProductResponseDto createProduct(CreateProductDto newProductDto, Long businessId, MultipartFile imageFile,
+    Long userId) throws JsonProcessingException {
 
         String imagePath = null;
 
@@ -78,6 +82,24 @@ public class ProductService {
 
         // Dentro del business, guardamos el objeto
         business.getProducts().add(savedProduct);
+
+        // Guardamos el cambio, que es solo el hecho de que se creó
+        // Primero creando el map del nuevo producto
+        Map<String, Object> newProductValues = new LinkedHashMap<>(){{
+            put("name", savedProduct.getName());
+            put("description", savedProduct.getDescription());
+            put("quantity", savedProduct.getQuantity());
+            put("categoryId", savedProduct.getCategory().getCategoryId());
+            put("unitId", savedProduct.getUnit().getUnitId());
+            put("image", savedProduct.getImage());
+        }};
+
+        // Se obtiene el usuario necesario
+        User user = userService.getUserOrTrow(userId);
+
+        changeService.createChange(new CreateChangeDto(
+                savedProduct, user, "{}", objectMapper.writeValueAsString(newProductValues)
+        ));
 
         // Devolvemos el objeto del usuario
         return productParser.toProductResponseDto(savedProduct);
@@ -108,9 +130,18 @@ public class ProductService {
         return productParser.toProductResponseDto(product);
     }
 
-    public ProductResponseDto patchProduct(Long productId, PatchProductDto productDto, Long userId) throws JsonProcessingException {
+    public ProductResponseDto patchProduct(Long productId, PatchProductDto productDto, Long userId, MultipartFile imageFile)
+            throws IOException {
+        String imagePath = null;
         Product newProduct = getProductOrThrow(productId);
         ProductChangesDto changes = getChanges(newProduct, productDto);
+
+        if(imageFile != null && !imageFile.isEmpty() && !isSameImage(imageFile, Path.of(newProduct.getImage()))){
+            imagePath = fileStorageService.save(imageFile, FileRoutes.PRODUCTS);
+            fileStorageService.deleteFile(Path.of(newProduct.getImage()));
+            changes.oldProductValues.put("image", newProduct.getImage());
+            changes.newProductValues.put("image", imagePath);
+        }
 
         changes.newProductValues.forEach((key, value)->{
             switch (key){
@@ -119,6 +150,7 @@ public class ProductService {
                 case "quantity" -> newProduct.setQuantity((Integer) value);
                 case "categoryId" -> newProduct.setCategory(categoryService.getCategoryOrThrow((Long) value));
                 case "unitId" -> newProduct.setUnit(unitService.getUnitOrTrow((Long) value));
+                case "image" -> newProduct.setImage((String) value);
             }
         });
         Product changedProduct = productRepository.save(newProduct);
@@ -164,5 +196,12 @@ public class ProductService {
             newProductValues.put("unitId", productDto.unitId());
         }
         return new ProductChangesDto(oldProductValues, newProductValues);
+    }
+
+    public boolean isSameImage(MultipartFile newImage, Path oldImagePath) throws IOException {
+        byte[] newImageBytes = newImage.getBytes();
+        byte[] oldImageBytes = Files.readAllBytes(oldImagePath);
+
+        return Arrays.equals(newImageBytes, oldImageBytes);
     }
 }

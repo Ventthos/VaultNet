@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -224,7 +225,7 @@ public class BusinessController {
             @RequestHeader("Authorization") String authHeader,
             @ModelAttribute @Valid CreateProductDto productDto,
             @RequestPart(value = "image", required = false) MultipartFile imageFile
-    ) throws IllegalAccessException {
+    ) throws IllegalAccessException, JsonProcessingException {
         // Extraer token y obtener ID del usuario
         Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
         userService.validateUserBelongsToBusiness(userId, id);
@@ -232,7 +233,7 @@ public class BusinessController {
         unitService.confirmUnitIsFromBusinessOrTrow(id, productDto.unitId());
         categoryService.confirmCategoryIsFromBusinessOrTrow(id, productDto.categoryId());
 
-        ProductResponseDto responseDto = productService.createProduct(productDto, id, imageFile);
+        ProductResponseDto responseDto = productService.createProduct(productDto, id, imageFile, userId);
         return  ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",
@@ -292,15 +293,16 @@ public class BusinessController {
             @PathVariable Long id,
             @PathVariable Long productId,
             @RequestHeader("Authorization") String authHeader,
-            @ModelAttribute@Valid PatchProductDto productDto
-    ) throws JsonProcessingException {
+            @ModelAttribute@Valid PatchProductDto productDto,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile
+    ) throws IOException {
         // Extraer token y obtener ID del usuario
         Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
         userService.validateUserBelongsToBusiness(userId, id);
 
         productService.confirmProductIsFromBusinessOrThrow(id, productId);
 
-        ProductResponseDto responseDto = productService.patchProduct(productId, productDto, userId);
+        ProductResponseDto responseDto = productService.patchProduct(productId, productDto, userId, imageFile);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -334,5 +336,7 @@ public class BusinessController {
                 )
         );
     }
+
+
 
 }

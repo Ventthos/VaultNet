@@ -36,4 +36,8 @@ public class FileStorageService {
             throw new RuntimeException("Error al guardar archivo: " + e.getMessage());
         }
     }
+
+    public void deleteFile(Path path) throws IOException {
+        Files.delete(path);
+    }
 }
