@@ -24,7 +24,9 @@ public enum Code {
     ROUTE_NOT_FOUND("La ruta solicitada no existe: ", HttpStatus.NOT_FOUND),
     PRODUCT_CREATED("Producto creado exitosamente", HttpStatus.CREATED),
     PRODUCT_NOT_FOUND("No se encontró el producto", HttpStatus.NOT_FOUND),
-    FILE_TOO_BIG("Se excedió el tamaño máximo para imagenes max: 10 MB", HttpStatus.BAD_REQUEST);
+    FILE_TOO_BIG("Se excedió el tamaño máximo para imagenes max: 10 MB", HttpStatus.BAD_REQUEST),
+    PRODUCT_EDITED("El producto se editó correctamente", HttpStatus.OK),
+    METHOD_NOT_ALLOWED("El método solicitado no está disponible", HttpStatus.METHOD_NOT_ALLOWED);
 
     private final String defaultMessage;
     private final HttpStatus httpStatus;

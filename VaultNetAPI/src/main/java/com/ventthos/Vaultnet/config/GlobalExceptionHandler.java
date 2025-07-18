@@ -74,4 +74,14 @@ public class GlobalExceptionHandler {
                 null
         ));
     }
+
+    @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleRequestNotSupported(Exception e){
+        return ResponseEntity.internalServerError().body(new ApiResponse<>(
+                "Error",
+                Code.METHOD_NOT_ALLOWED.name(),
+                Code.METHOD_NOT_ALLOWED.getDefaultMessage(),
+                null
+        ));
+    }
 }

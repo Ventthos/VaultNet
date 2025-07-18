@@ -1,5 +1,6 @@
 package com.ventthos.Vaultnet.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ventthos.Vaultnet.config.JwtUtil;
 import com.ventthos.Vaultnet.dto.business.BusinessResponseDto;
 import com.ventthos.Vaultnet.dto.business.CreateBusinessDto;
@@ -7,6 +8,7 @@ import com.ventthos.Vaultnet.dto.category.CategoryResponseDto;
 import com.ventthos.Vaultnet.dto.category.CreateCategoryDto;
 import com.ventthos.Vaultnet.dto.change.ChangeResponseDto;
 import com.ventthos.Vaultnet.dto.products.CreateProductDto;
+import com.ventthos.Vaultnet.dto.products.PatchProductDto;
 import com.ventthos.Vaultnet.dto.products.ProductResponseDto;
 import com.ventthos.Vaultnet.dto.responses.ApiResponse;
 import com.ventthos.Vaultnet.dto.unit.CreateUnitDto;
@@ -285,6 +287,31 @@ public class BusinessController {
         );
     }
 
+    @PatchMapping("/{id}/products/{productId}")
+    public ResponseEntity<ApiResponse<ProductResponseDto>> patchProduct(
+            @PathVariable Long id,
+            @PathVariable Long productId,
+            @RequestHeader("Authorization") String authHeader,
+            @ModelAttribute@Valid PatchProductDto productDto
+    ) throws JsonProcessingException {
+        // Extraer token y obtener ID del usuario
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
+        userService.validateUserBelongsToBusiness(userId, id);
+
+        productService.confirmProductIsFromBusinessOrThrow(id, productId);
+
+        ProductResponseDto responseDto = productService.patchProduct(productId, productDto, userId);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        "Success",
+                        Code.PRODUCT_EDITED.name(),
+                        Code.PRODUCT_EDITED.getDefaultMessage(),
+                        responseDto
+                )
+        );
+    }
+
     @GetMapping("/{id}/products/{productId}/changes")
     public ResponseEntity<ApiResponse<List<ChangeResponseDto>>> getChangesInProduct(
             @PathVariable Long id,
@@ -307,4 +334,5 @@ public class BusinessController {
                 )
         );
     }
+
 }

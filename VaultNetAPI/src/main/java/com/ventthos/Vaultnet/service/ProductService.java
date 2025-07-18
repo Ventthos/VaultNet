@@ -1,23 +1,24 @@
 package com.ventthos.Vaultnet.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.ventthos.Vaultnet.config.FileRoutes;
 import com.ventthos.Vaultnet.config.FileStorageService;
-import com.ventthos.Vaultnet.domain.Business;
-import com.ventthos.Vaultnet.domain.Category;
-import com.ventthos.Vaultnet.domain.Product;
-import com.ventthos.Vaultnet.domain.Unit;
+import com.ventthos.Vaultnet.domain.*;
+import com.ventthos.Vaultnet.dto.change.CreateChangeDto;
 import com.ventthos.Vaultnet.dto.products.CreateProductDto;
+import com.ventthos.Vaultnet.dto.products.PatchProductDto;
 import com.ventthos.Vaultnet.dto.products.ProductResponseDto;
 import com.ventthos.Vaultnet.exceptions.ApiException;
 import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.parsers.ProductParser;
 import com.ventthos.Vaultnet.repository.ProductRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductService {
@@ -27,15 +28,25 @@ public class ProductService {
     private final UnitService unitService;
     private final ProductParser productParser;
     private final FileStorageService fileStorageService;
+    private final ChangeService changeService;
+    private final UserService userService;
+    private final ObjectMapper objectMapper;
+
+    record ProductChangesDto(Map<String, Object> oldProductValues, Map<String, Object> newProductValues) { }
 
     public ProductService(ProductRepository productRepository, BusinessService businessService, CategoryService categoryService,
-    UnitService unitService, ProductParser productParser, FileStorageService fileStorageService){
+                          UnitService unitService, ProductParser productParser, FileStorageService fileStorageService, @Lazy ChangeService changeService,
+                          UserService userService, @Lazy ObjectMapper objectMapper){
         this.productRepository = productRepository;
         this.businessService = businessService;
         this.categoryService = categoryService;
         this.unitService = unitService;
         this.productParser = productParser;
         this.fileStorageService = fileStorageService;
+        this.changeService = changeService;
+        this.userService = userService;
+        this.objectMapper = objectMapper;
+
     }
 
     public ProductResponseDto createProduct(CreateProductDto newProductDto, Long businessId, MultipartFile imageFile){
@@ -95,5 +106,63 @@ public class ProductService {
     public ProductResponseDto getProduct(Long productId){
         Product product = getProductOrThrow(productId);
         return productParser.toProductResponseDto(product);
+    }
+
+    public ProductResponseDto patchProduct(Long productId, PatchProductDto productDto, Long userId) throws JsonProcessingException {
+        Product newProduct = getProductOrThrow(productId);
+        ProductChangesDto changes = getChanges(newProduct, productDto);
+
+        changes.newProductValues.forEach((key, value)->{
+            switch (key){
+                case "name" -> newProduct.setName((String) value);
+                case "description" -> newProduct.setDescription((String) value);
+                case "quantity" -> newProduct.setQuantity((Integer) value);
+                case "categoryId" -> newProduct.setCategory(categoryService.getCategoryOrThrow((Long) value));
+                case "unitId" -> newProduct.setUnit(unitService.getUnitOrTrow((Long) value));
+            }
+        });
+        Product changedProduct = productRepository.save(newProduct);
+
+        // Guardado de cambios, necesitamos el user
+        //Debe haber al menos un cambio
+        if(!changes.newProductValues.isEmpty()){
+            User user = userService.getUserOrTrow(userId);
+
+
+            changeService.createChange(
+                    new CreateChangeDto(changedProduct, user, objectMapper.writeValueAsString(changes.oldProductValues),
+                            objectMapper.writeValueAsString(changes.newProductValues))
+            );
+        }
+
+
+        return productParser.toProductResponseDto(changedProduct);
+    }
+
+    private ProductChangesDto getChanges(Product product, PatchProductDto productDto){
+        Map<String, Object> oldProductValues = new LinkedHashMap<>();
+        Map<String, Object> newProductValues = new LinkedHashMap<>();
+
+        if(productDto.name() != null && !productDto.name().equals(product.getName())) {
+            oldProductValues.put("name", product.getName());
+            newProductValues.put("name", productDto.name());
+        }
+        if(productDto.description() != null && !productDto.description().equals(product.getDescription())){
+            oldProductValues.put("description", product.getDescription());
+            newProductValues.put("description", productDto.description());
+        }
+        if(productDto.quantity() != null && !productDto.quantity().equals(product.getQuantity())){
+            oldProductValues.put("quantity", product.getQuantity());
+            newProductValues.put("quantity", productDto.quantity());
+        }
+        if(productDto.categoryId() != null && !productDto.categoryId().equals(product.getCategory().getCategoryId())){
+            oldProductValues.put("categoryId", product.getCategory().getCategoryId());
+            newProductValues.put("categoryId", productDto.categoryId());
+        }
+        if(productDto.unitId() != null && !productDto.unitId().equals(product.getUnit().getUnitId())){
+            oldProductValues.put("unitId", product.getUnit().getUnitId());
+            newProductValues.put("unitId", productDto.unitId());
+        }
+        return new ProductChangesDto(oldProductValues, newProductValues);
     }
 }
