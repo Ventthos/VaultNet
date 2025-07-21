@@ -22,6 +22,8 @@ public class ProductParser {
                 product.getDescription(),
                 product.getImage(),
                 product.getQuantity(),
+                product.getMinQuantity(),
+                product.getAlertQuantity(),
                 unitParser.toUnitResponseDto(product.getUnit().getUnitId(), product.getUnit()),
                 categoryParser.toCategoryDto(product.getCategory().getCategoryId(), product.getCategory())
         );

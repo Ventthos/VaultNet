@@ -12,6 +12,10 @@ public record CreateProductDto(
         String description,
         @Min(value = 0, message = "La cantidad no puede ser menor a 0")
         Integer quantity,
+        @Min(value = 0, message = "La cantidad mínima no puede ser menor a 0")
+        Integer minQuantity,
+        @Min(value = 0, message = "La cantidad para el aviso no puede ser menor a 0")
+        Integer alertQuantity,
         @NotNull(message = "Se necesita el campo unitId")
         Long unitId,
         @NotNull(message = "Se necesita el campo categoryId")

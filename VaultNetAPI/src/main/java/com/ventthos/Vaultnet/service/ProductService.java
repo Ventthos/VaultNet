@@ -74,6 +74,8 @@ public class ProductService {
         newProduct.setDescription(newProductDto.description());
         newProduct.setImage(imagePath);
         newProduct.setQuantity(Objects.requireNonNullElse(newProductDto.quantity(), 0));
+        newProduct.setMinQuantity(Objects.requireNonNullElse(newProductDto.minQuantity(), 0));
+        newProduct.setAlertQuantity(Objects.requireNonNullElse(newProductDto.alertQuantity(),newProduct.getMinQuantity()));
         newProduct.setUnit(unit);
         newProduct.setCategory(category);
 
@@ -89,6 +91,8 @@ public class ProductService {
             put("name", savedProduct.getName());
             put("description", savedProduct.getDescription());
             put("quantity", savedProduct.getQuantity());
+            put("minQuantity", savedProduct.getAlertQuantity());
+            put("alertQuantity", savedProduct.getAlertQuantity());
             put("categoryId", savedProduct.getCategory().getCategoryId());
             put("unitId", savedProduct.getUnit().getUnitId());
             put("image", savedProduct.getImage());
@@ -151,6 +155,8 @@ public class ProductService {
                 case "categoryId" -> newProduct.setCategory(categoryService.getCategoryOrThrow((Long) value));
                 case "unitId" -> newProduct.setUnit(unitService.getUnitOrTrow((Long) value));
                 case "image" -> newProduct.setImage((String) value);
+                case "minQuantity" -> newProduct.setMinQuantity((Integer) value);
+                case "alertQuantity" -> newProduct.setAlertQuantity((Integer) value);
             }
         });
         Product changedProduct = productRepository.save(newProduct);
@@ -187,6 +193,14 @@ public class ProductService {
             oldProductValues.put("quantity", product.getQuantity());
             newProductValues.put("quantity", productDto.quantity());
         }
+        if(productDto.minQuantity() != null && !productDto.minQuantity().equals(product.getMinQuantity())){
+            oldProductValues.put("minQuantity", product.getMinQuantity());
+            newProductValues.put("minQuantity", productDto.minQuantity());
+        }
+        if(productDto.alertQuantity() != null && !productDto.alertQuantity().equals(product.getAlertQuantity())){
+            oldProductValues.put("alertQuantity", product.getAlertQuantity());
+            newProductValues.put("alertQuantity", productDto.alertQuantity());
+        }
         if(productDto.categoryId() != null && !productDto.categoryId().equals(product.getCategory().getCategoryId())){
             oldProductValues.put("categoryId", product.getCategory().getCategoryId());
             newProductValues.put("categoryId", productDto.categoryId());
@@ -195,6 +209,7 @@ public class ProductService {
             oldProductValues.put("unitId", product.getUnit().getUnitId());
             newProductValues.put("unitId", productDto.unitId());
         }
+
         return new ProductChangesDto(oldProductValues, newProductValues);
     }
 

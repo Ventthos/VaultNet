@@ -10,6 +10,8 @@ public record ProductResponseDto (
    String description,
    String image,
    Integer quantity,
+   Integer minQuantity,
+   Integer alertQuantity,
    UnitResponseDto unit,
    CategoryResponseDto category
 ){ }

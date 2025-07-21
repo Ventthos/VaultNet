@@ -13,7 +13,8 @@ public class ChangeParser {
 
     public ChangeResponseDto toChangeResponseDto(Change change){
         return new ChangeResponseDto(
-            change.getChangeId(),
+                change.getChangeId(),
+            change.getProduct().getProductId(),
             userParser.toUserResponseDto(change.getUser().getUserId(), change.getUser()),
                 change.getOldValuesJson(),
            change.getNewValuesJson()
