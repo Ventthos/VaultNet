@@ -14,11 +14,14 @@ public class RegisterUserDto {
     @NotBlank(message = "No se acepta el campo 'name' vacío")
     private String name;
 
-    @NotBlank(message = "El apellido paterno es obligatorio")
+    @NotBlank(message = "paternalLastname es obligatorio")
     private String paternalLastname;
 
-    @NotBlank(message = "El apellido materno es obligatorio")
+    @NotBlank(message = "maternalLastname es obligatorio")
     private String maternalLastname;
+
+    @NotBlank(message = "El username es obligatorio")
+    private String username;
 
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El formato del email no es válido")

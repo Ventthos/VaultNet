@@ -47,3 +47,23 @@ p,input,li, button{
 .blue-rounded-button:active{
   background-color: var(--main-color-lighter);
 }
+
+.label-input-login{
+  font-family: var(--title-font);
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.input-login{
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  background-color: var(--light-gray);
+}
+
+@media(min-width: 1024px){
+    .input-login{
+      padding: 1rem;
+    }
+}

@@ -58,6 +58,7 @@ public class UserService {
         newParsedUser.setName(newUser.getName());
         newParsedUser.setPaternalLastName(newUser.getPaternalLastname());
         newParsedUser.setMaternalLastName(newUser.getMaternalLastname());
+        newParsedUser.setUsername(newUser.getUsername());
         newParsedUser.setEmail(newUser.getEmail());
         newParsedUser.setPassword(hashedPassword);
         newParsedUser.setImage(imagePath);

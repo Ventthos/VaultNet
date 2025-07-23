@@ -24,6 +24,8 @@ public class User {
 
     @Column(length = 100)
     private String maternalLastName;
+    @Column(length = 100)
+    private String username;
     @Column(unique = true)
     private String email;
     private String password;
