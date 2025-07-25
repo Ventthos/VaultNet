@@ -1,14 +1,16 @@
 
+import { MessageContextProvider } from './contexts/messageContext'
 import VaultNetRouter from './router/router'
 import { BrowserRouter, Router } from 'react-router-dom'
 
 function App() {
 
   return (
-    <BrowserRouter>
-      <VaultNetRouter/>
-    </BrowserRouter>
-    
+    <MessageContextProvider>
+      <BrowserRouter>
+        <VaultNetRouter/>
+      </BrowserRouter>
+    </MessageContextProvider>
   )
 }
 

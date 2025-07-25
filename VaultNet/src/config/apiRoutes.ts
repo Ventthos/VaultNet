@@ -1,4 +1,5 @@
-export const mainRoute = ""
-export const authRoute = "auth"
-export const loginRoute = "login"
+export const mainRoute = "http://localhost:8080/"
+export const userRoute = mainRoute + "user/"
+export const authRoute = userRoute+"auth/"
+export const loginRoute = authRoute+"login"
 export const registerRoute = "register"

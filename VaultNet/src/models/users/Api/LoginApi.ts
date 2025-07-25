@@ -1,4 +1,4 @@
-export interface LoginApi{
+export interface LoginDto{
     email:string,
     password:string
 }

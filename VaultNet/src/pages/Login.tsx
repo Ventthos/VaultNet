@@ -1,6 +1,10 @@
 import { InputWithLabel } from "../components/generalUse/InputWithLabel";
 import { useState, useEffect } from "react";
 import { useWindowWidth } from "../utils/useWindowWidth";
+import { logIn as loginService } from "../services/users/Login";
+import { MessageWindow } from "../components/generalUse/MessageWindow";
+import { useContext } from "react";
+import { MessageContext } from "../contexts/messageContext";
 
 export function Login(){
     const [isLogin, setIsLogin] = useState(true);
@@ -8,6 +12,7 @@ export function Login(){
     const [isFading, setIsFading] = useState(false);
     const [firstLoading, setFirstLoading] = useState(true);
     const windowWidth = useWindowWidth(); 
+    const {setWaiting, setError, clearMessage, messageInfo} = useContext(MessageContext);
 
   useEffect(() => {
     setIsFading(true); // empieza la animación de oscurecimiento
@@ -20,8 +25,31 @@ export function Login(){
     return () => clearTimeout(timeout);
   }, [isLogin]);
 
+    async function logIn(event: React.FormEvent<HTMLFormElement>){
+        event.preventDefault();
+        const form = event.currentTarget;
+        const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+        const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+
+        setWaiting({message: "Iniciando sesión..."})
+        const response = await loginService({email, password})
+        if(response.error){
+            setError({message: response.error.code, mode:"accept", onConfirm: ()=>clearMessage()})
+            console.error(response.error.message);
+            
+            return
+        }
+        clearMessage();
+        console.log("si se pudo")
+        
+    }  
+
     return(
         <div className="h-[100dvh] lg:flex w-full relative overflow-x-hidden">
+            {
+                messageInfo && <MessageWindow title={messageInfo.title} message={messageInfo.message} type={messageInfo.type} mode={messageInfo.mode} onConfirm={messageInfo.onConfirm}
+                onCancel={messageInfo.onCancel} onRetry={messageInfo.onRetry}/> 
+            }
             {/* La imagen*/}
              <div
                 className={`relative lg:absolute w-full h-3/10 lg:w-1/2 lg:h-full overflow-hidden transition-all duration-700 ease-in-out rounded-b-[3rem] mb-4 lg:mb-0
@@ -83,11 +111,11 @@ export function Login(){
                             setFirstLoading(false);
                         }
                         }} className="underline text-(--main-color)">Crea una aquí</button></p>
-                    <form className="flex flex-col gap-4 pt-5">
+                    <form className="flex flex-col gap-4 pt-5" onSubmit={(event)=>logIn(event)}>
                         <InputWithLabel text="Correo" labelStyles="label-input-login"
-                        inputStyles="input-login" inputType="email"/>
+                        inputStyles="input-login" inputType="email" inputName="email" inputId="email"/>
                         <InputWithLabel text="Contraseña" labelStyles="label-input-login"
-                        inputStyles="input-login" inputType="password"/>
+                        inputStyles="input-login" inputType="password" inputName="password" inputId="password"/>
                         <input type="submit" className="rounded-button blue-rounded-button mt-5" value={"Iniciar sesión"}/>
                     </form>
                 </div>
