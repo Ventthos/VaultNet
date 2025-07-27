@@ -7,6 +7,8 @@ import { fromUserResponseToUser } from "../../parsers/user";
 import type { LoginDto } from "../../models/users/Api/LoginApi";
 
 export async function logIn(LoginDto: LoginDto): Promise<Response<User>>{
+    if(!LoginDto.email || !LoginDto.password) return { success: null, error: {code: "UNFILLED_FIELDS", message: "Por favor, llene todos los campos"}};
+
     const response = await request<UserApiResponse>({ method: "POST", url: loginRoute,data: LoginDto})
     if(response.error) return { success: null, error: response.error };
 

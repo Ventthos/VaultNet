@@ -1,9 +1,9 @@
 import { InputWithLabel } from "../components/generalUse/InputWithLabel";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import { useWindowWidth } from "../utils/useWindowWidth";
 import { logIn as loginService } from "../services/users/Login";
+import { register as registerService } from "../services/users/RegisterUser";
 import { MessageWindow } from "../components/generalUse/MessageWindow";
-import { useContext } from "react";
 import { MessageContext } from "../contexts/messageContext";
 
 export function Login(){
@@ -43,6 +43,21 @@ export function Login(){
         console.log("si se pudo")
         
     }  
+    async function register(event:React.FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        setWaiting({message: "Iniciando sesión..."})
+        const form = event.currentTarget;
+        const formData = new FormData(form);
+        const response = await registerService(formData)
+        if(response.error){
+            setError({message: response.error.code, mode:"accept", onConfirm: ()=>clearMessage()})
+            console.error(response.error.message);
+
+            return
+        }
+        clearMessage();
+        console.log("si se pudo")
+    }
 
     return(
         <div className="h-[100dvh] lg:flex w-full relative overflow-x-hidden">
@@ -80,21 +95,23 @@ export function Login(){
                             setFirstLoading(false);
                         }
                         }} className="underline text-(--main-color)">Inicia sesión</button></p>
-                    <form className="flex flex-col gap-4 pt-5">
+                    <form className="flex flex-col gap-4 pt-5" onSubmit={(event)=>register(event)}>
                         <InputWithLabel text="Nombre" labelStyles="label-input-login"
-                        inputStyles="input-login"/>
+                        inputStyles="input-login" inputName="name"/>
                         <div className="flex gap-4 flex-col lg:flex-row">
                             <InputWithLabel text="Apellido paterno" labelStyles="label-input-login"
-                            inputStyles="input-login"/>
+                            inputStyles="input-login" inputName="paternalLastname"/>
                             <InputWithLabel text="Apellido materno" labelStyles="label-input-login"
-                            inputStyles="input-login"/>
+                            inputStyles="input-login" inputName="maternalLastname"/>
                         </div>
+                        <InputWithLabel text="Usuario" labelStyles="label-input-login"
+                            inputStyles="input-login" inputName="username"/>
                         <InputWithLabel text="Correo" labelStyles="label-input-login"
-                            inputStyles="input-login" inputType="email"/>
+                            inputStyles="input-login" inputType="email" inputName="email"/>
                         <InputWithLabel text="Contraseña" labelStyles="label-input-login"
-                            inputStyles="input-login" inputType="password"/>
+                            inputStyles="input-login" inputType="password" inputName="password"/>
                         <InputWithLabel text="Confirmar contraseña" labelStyles="label-input-login"
-                            inputStyles="input-login" inputType="password"/>
+                            inputStyles="input-login" inputType="password" inputName="comfirmPassword"/>
                         <input type="submit" className="rounded-button blue-rounded-button mt-5" value={"Crear cuenta"}/>
                     </form>
                     
