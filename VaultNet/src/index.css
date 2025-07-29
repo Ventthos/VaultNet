@@ -5,6 +5,8 @@
   --main-color-lighter: #5d67b3;
   --title-font: "Concert One", sans-serif;
   --light-gray: #E3E3E3;
+  --light-gray-2: #D9D9D9;
+  --light-gray-3: #F0F0F0;
 }
 
 html {
@@ -28,8 +30,9 @@ p,input,li, button{
 }
 
 .rounded-button{
-  border-radius: 1.5rem;
+  border-radius: 1rem;
   border: none;
+  
 }
 
 .blue-rounded-button{
@@ -66,4 +69,47 @@ p,input,li, button{
     .input-login{
       padding: 1rem;
     }
+}
+
+.scrollbar-fade {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0) transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.scrollbar-fade:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
+}
+
+.scrollbar-fade::-webkit-scrollbar {
+  width: 8px;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.scrollbar-fade:hover::-webkit-scrollbar {
+  opacity: 1;
+}
+
+.scrollbar-fade::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+}
+
+.input-product-display{
+  font-size: 1rem;
+  border: none;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.input-product-display:focus{
+
+  outline: 1px solid rgb(128, 128, 128);
+}
+
+.input-product-display-label{
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.125rem;
 }
