@@ -1,5 +1,6 @@
 import { BusinessesDisplay } from "../components/InventoryManagementPage/BusinessesDisplay";
 import { BusinessHeader } from "../components/InventoryManagementPage/BusinessHeader";
+import { CategoryTable } from "../components/InventoryManagementPage/CategoryTable";
 import { ProductDetail } from "../components/InventoryManagementPage/ProductDetail";
 import { useDraggableContainer } from "../hooks/useDraggableContainer";
 
@@ -12,8 +13,8 @@ export function InventoryManagementPage(){
             </div>
             <BusinessesDisplay/>
             <ProductDetail/>
-            <div ref={containerRef} className="w-[300%] h-[300%] bg-radial from-pink-400 from-40% to-fuchsia-700">
-                
+            <div ref={containerRef} className="aspect-square w-[5000px]  bg-radial from-pink-400 from-40% to-fuchsia-700 relative">
+                <CategoryTable/>
             </div>
         </div>
     )

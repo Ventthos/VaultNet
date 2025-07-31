@@ -11,6 +11,7 @@
 
 html {
   box-sizing: border-box;
+  overscroll-behavior-y: contain;
 }
 
 html, body, #root {
@@ -25,7 +26,7 @@ h1,h2,h3,h4{
   font-style: normal;
 }
 
-p,input,li, button{
+p,input,li, button, th, tr{
   font-family: Arial, Helvetica, sans-serif;
 }
 
