@@ -33,6 +33,7 @@ export function useDraggableObject() {
   // Mouse
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     startDrag(e.clientX, e.clientY);
   }, [startDrag]);
 
