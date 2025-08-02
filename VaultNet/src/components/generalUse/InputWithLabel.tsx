@@ -7,7 +7,7 @@ interface Option {
 
 type InputWithLabelProps = Readonly<{
     text: string;
-    inputType?: "text" | "email" | "password" | "number" | "textarea" | "select" | "date" | "datetime" | "checkbox" | "radio" | "tel" | "url";
+    inputType?: "text" | "email" | "password" | "number" | "textarea" | "select" | "date" | "datetime" | "checkbox" | "radio" | "tel" | "url" | "color";
     value?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLSelectElement>) => void;
     placeholder?: string;

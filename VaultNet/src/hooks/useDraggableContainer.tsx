@@ -60,8 +60,10 @@ export function useDraggableContainer() {
     };
 
     const onTouchMove = (e: TouchEvent) => {
-      if (isDraggingObjectRef.current || !isDragging) return;
+      if (isDraggingObjectRef.current) return;
+
       if (e.touches.length === 1 && isDragging) {
+        // Movimiento con un dedo
         const dx = e.touches[0].clientX - lastPos.current.x;
         const dy = e.touches[0].clientY - lastPos.current.y;
         position.current.x += dx;
@@ -69,7 +71,9 @@ export function useDraggableContainer() {
         lastPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         applyTransform();
       } else if (e.touches.length === 2) {
-        e.preventDefault();
+        // Pinch zoom con dos dedos
+        e.preventDefault(); // Previene scroll del navegador
+
         const newDistance = getTouchDistance(e.touches);
         if (lastDistance.current != null) {
           const zoomFactor = newDistance / lastDistance.current;
@@ -82,7 +86,7 @@ export function useDraggableContainer() {
           const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
 
           position.current.x -= centerX * (scaleDelta - 1);
-          position.current.y -= centerY * (scaleDelta - 1);
+          position.current.y -= centerY * (scaleDelta - 1);66
 
           scale.current = newScale;
           applyTransform();
