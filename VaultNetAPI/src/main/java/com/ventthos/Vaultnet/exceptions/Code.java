@@ -26,7 +26,8 @@ public enum Code {
     PRODUCT_NOT_FOUND("No se encontró el producto", HttpStatus.NOT_FOUND),
     FILE_TOO_BIG("Se excedió el tamaño máximo para imagenes max: 10 MB", HttpStatus.BAD_REQUEST),
     PRODUCT_EDITED("El producto se editó correctamente", HttpStatus.OK),
-    METHOD_NOT_ALLOWED("El método solicitado no está disponible", HttpStatus.METHOD_NOT_ALLOWED);
+    METHOD_NOT_ALLOWED("El método solicitado no está disponible", HttpStatus.METHOD_NOT_ALLOWED),
+    USERS_ADDED("Usuarios agregados al negocio", HttpStatus.OK);
 
     private final String defaultMessage;
     private final HttpStatus httpStatus;

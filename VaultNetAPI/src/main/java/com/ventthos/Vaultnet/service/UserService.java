@@ -119,6 +119,15 @@ public class UserService {
         return userOptional.get();
     }
 
+    public User getUserOrTrow(String userEmail){
+        Optional<User> userOptional = userRepository.findByEmail(userEmail);
+        if(userOptional.isEmpty()){
+            throw new ApiException(Code.USER_NOT_FOUND);
+        }
+
+        return userOptional.get();
+    }
+
     public void validateUserBelongsToBusiness(Long userId, Long businessId) {
         if(getUserBusinesses(userId).businesses().stream()
                 .noneMatch(userBusinessInResponse -> userBusinessInResponse.businessId().equals(businessId)))

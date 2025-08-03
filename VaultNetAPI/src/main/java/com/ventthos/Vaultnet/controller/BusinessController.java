@@ -2,8 +2,10 @@ package com.ventthos.Vaultnet.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ventthos.Vaultnet.config.JwtUtil;
+import com.ventthos.Vaultnet.dto.business.AddUserToBusinessDto;
 import com.ventthos.Vaultnet.dto.business.BusinessResponseDto;
 import com.ventthos.Vaultnet.dto.business.CreateBusinessDto;
+import com.ventthos.Vaultnet.dto.business.UsersInBusinessDto;
 import com.ventthos.Vaultnet.dto.category.CategoryResponseDto;
 import com.ventthos.Vaultnet.dto.category.CreateCategoryDto;
 import com.ventthos.Vaultnet.dto.change.ChangeResponseDto;
@@ -337,6 +339,25 @@ public class BusinessController {
         );
     }
 
+    @PostMapping ("/{id}/members")
+    public ResponseEntity<ApiResponse<UsersInBusinessDto>> getMembersInBusiness(
+            @PathVariable Long id,
+            @RequestBody @Valid AddUserToBusinessDto usersDto,
+            @RequestHeader("Authorization") String authHeader
+            ){
+        // Extraer token y obtener ID del usuario
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
+        userService.validateUserBelongsToBusiness(userId, id);
 
+        UsersInBusinessDto responseDto = businessService.addUsersToBusiness(usersDto, id);
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        "Success",
+                        Code.USERS_ADDED.name(),
+                        Code.USERS_ADDED.getDefaultMessage(),
+                        responseDto
+                )
+        );
+    }
 
 }
