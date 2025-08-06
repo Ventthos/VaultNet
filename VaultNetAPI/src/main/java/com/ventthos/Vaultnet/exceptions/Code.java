@@ -27,7 +27,8 @@ public enum Code {
     FILE_TOO_BIG("Se excedió el tamaño máximo para imagenes max: 10 MB", HttpStatus.BAD_REQUEST),
     PRODUCT_EDITED("El producto se editó correctamente", HttpStatus.OK),
     METHOD_NOT_ALLOWED("El método solicitado no está disponible", HttpStatus.METHOD_NOT_ALLOWED),
-    USERS_ADDED("Usuarios agregados al negocio", HttpStatus.OK);
+    USERS_ADDED("Usuarios agregados al negocio", HttpStatus.OK),
+    MISSING_PARAMETER("Faltaron algunos parámetros en la solicitud", HttpStatus.BAD_REQUEST);
 
     private final String defaultMessage;
     private final HttpStatus httpStatus;

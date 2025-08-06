@@ -7,10 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
@@ -67,7 +71,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
     public ResponseEntity<ApiResponse<Object>> handleFileTooBig(Exception e){
-        return ResponseEntity.internalServerError().body(new ApiResponse<>(
+        return ResponseEntity.badRequest().body(new ApiResponse<>(
                 "Error",
                 Code.FILE_TOO_BIG.name(),
                 Code.FILE_TOO_BIG.getDefaultMessage(),
@@ -77,11 +81,30 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ApiResponse<Object>> handleRequestNotSupported(Exception e){
-        return ResponseEntity.internalServerError().body(new ApiResponse<>(
+        return ResponseEntity.badRequest().body(new ApiResponse<>(
                 "Error",
                 Code.METHOD_NOT_ALLOWED.name(),
                 Code.METHOD_NOT_ALLOWED.getDefaultMessage(),
                 null
         ));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleMissingParams(MissingServletRequestParameterException ex) {
+        String paramName = ex.getParameterName();
+
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Parámetro obligatorio faltante");
+        error.put("message", "El parámetro '" + paramName + "' es requerido.");
+
+
+        return ResponseEntity.badRequest().body( new ApiResponse<>(
+                "Error",
+                Code.MISSING_PARAMETER.name(),
+                Code.MISSING_PARAMETER.getDefaultMessage(),
+                error
+                )
+
+        );
     }
 }

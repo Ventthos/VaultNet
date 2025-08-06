@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -58,6 +59,15 @@ public class UserController {
         return ResponseEntity.ok(
                 new ApiResponse<>("Success", Code.ELEMENT_GET_SUCCESSFUL.name(),
                         Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(), user)
+        );
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ApiResponse<List<UserResponseDto>>> findUsersByEmail(@RequestParam String email){
+        List<UserResponseDto> users = userService.findUsersWithEmailLike(email);
+        return ResponseEntity.ok(
+                new ApiResponse<>("Success",  Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(), users)
         );
     }
 }

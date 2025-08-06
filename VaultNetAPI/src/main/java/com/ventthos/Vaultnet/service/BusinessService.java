@@ -137,4 +137,13 @@ public class BusinessService {
         return new UsersInBusinessDto(business.getUsers().stream().map(userInList ->
                 userParser.toUserResponseDto(userInList.getUser().getUserId(), userInList.getUser())).toList());
     }
+
+    public List<BusinessResponseDto> getBusinessFromUser(Long id){
+        // Hallamos el usuario
+        User user = userService.getUserOrTrow(id);
+
+        // Obtenemos los negocios del usuario y los parseamos
+        return user.getBusinesses().stream().map(userBusiness ->
+                businessParser.toBusinessDto(userBusiness.getBusiness().getBusinessId(), userBusiness.getBusiness())).toList();
+    }
 }

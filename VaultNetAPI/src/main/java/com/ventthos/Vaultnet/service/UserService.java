@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -134,5 +135,10 @@ public class UserService {
         {
             throw new ApiException(Code.ACCESS_DENIED);
         }
+    }
+
+    public List<UserResponseDto> findUsersWithEmailLike(String email){
+        List<User> usersFound = userRepository.findByEmailContainingIgnoreCase(email);
+        return usersFound.stream().map(user -> userParser.toUserResponseDto(user.getUserId(), user)).toList();
     }
 }

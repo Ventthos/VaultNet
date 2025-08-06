@@ -29,6 +29,7 @@ api.interceptors.response.use(response=>response,
 export async function request<T>(config: {
   method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
   url: string;
+  params?: Record<string, any>;
   data?: any;
   token?: string;
 }
@@ -38,6 +39,7 @@ export async function request<T>(config: {
         const response = await api.request<T>({
             method: config.method,
             url: config.url,
+            params: config.params,
             data: config.data,
             headers: {
                 ...(config.token ? { Authorization: `Bearer ${config.token}` } : {}),

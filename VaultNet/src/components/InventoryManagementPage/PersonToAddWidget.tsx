@@ -1,11 +1,28 @@
-export function PersonToAddWidget(){
+type props = {
+    readonly user: {
+        name: string,
+        email: string,
+        profilePicture: string
+    }
+    readonly showDeleteButton?: boolean
+}
+
+export function PersonToAddWidget({user, showDeleteButton = false}:props){
     return(
-        <div className="w-full h-12 bg-white rounded-lg flex items-center justify-between px-4">
-            <div className="flex items-center gap-2">
-                <img src="https://i.pinimg.com/564x/e8/ee/07/e8ee0728e1ba12edd484c111c1f492f2.jpg" alt="User profile" className="w-10 h-10 rounded-full border border-dashed border-2"/>
-                <span className="text-sm font-normal">Nombre de la persona</span>
+        <div className="w-full bg-white rounded-lg flex items-center justify-between hover:bg-gray-200">
+            <div className="flex items-center gap-2 p-2">
+                <img src={user.profilePicture} alt="User profile" className="w-10 h-10 rounded-full"/>
+                <div className="flex flex-col">
+                    <p className="text-sm font-bold">{user.name}</p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                </div>
+                
             </div>
-            <button className="text-red-500 hover:text-red-700">Eliminar</button>
+            {
+                showDeleteButton && (
+                    <button className="text-red-500 hover:text-red-700">Eliminar</button>
+                )
+            }
         </div>
     )
 }

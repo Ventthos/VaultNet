@@ -5,9 +5,9 @@ import { fromBusinessResponseToBusiness } from "../../parsers/BusinessParser";
 import type { Response } from "../../models/api/Response";
 import type { Business } from "../../models/business/local/Business";
 
-export async function CreateBusinessService(createBusinessDto: FormData, token:string): Promise<Response<Business>>{
+export async function createBusinessService(createBusinessDto: FormData, token:string): Promise<Response<Business>>{
     for(const pair of createBusinessDto.entries()){
-        if(!pair[1]) return { success: null, error: {code: "UNFILLED_FIELDS", message: "Por favor, llene todos los campos"}};
+        if(!pair[1] && pair[0] === "name" ) return { success: null, error: {code: "UNFILLED_FIELDS", message: "Por favor, llene todos los campos"}};
     }
 
     const response = await request<BusinessResponse>({method:"POST", url:businessRoute, data:createBusinessDto, token})

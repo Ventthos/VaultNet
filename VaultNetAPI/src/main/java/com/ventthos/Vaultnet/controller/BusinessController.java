@@ -359,5 +359,21 @@ public class BusinessController {
                 )
         );
     }
-
+    
+    @GetMapping("/userBusinesses")
+    public ResponseEntity<ApiResponse<List<BusinessResponseDto>>> getBusinessFromUser(
+            @RequestHeader("Authorization") String authHeader
+    ){
+        // Extraer token y obtener ID del usuario
+        Long userId = jwtUtil.extractUserIdFromHeader(authHeader);
+        List<BusinessResponseDto> responseDtos = businessService.getBusinessFromUser(userId);
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        "Success",
+                        Code.ELEMENT_GET_SUCCESSFUL.name(),
+                        Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(),
+                        responseDtos
+                )
+        );
+    }
 }

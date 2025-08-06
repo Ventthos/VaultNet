@@ -45,7 +45,7 @@ function getImage(type: string){
 export function MessageWindow({title, message, mode, type, onConfirm, onCancel, onRetry}: MessageWindowProps){
     
     return(
-        <div className="w-full h-[100dvh] bg-black/40 absolute flex place-content-center items-center z-50">
+        <div className="w-full h-[100dvh] bg-black/40 absolute flex place-content-center items-center z-100">
             <div className={twMerge("w-8/10 lg:w-1/2 p-1", `${getTypeColor(type)} rounded-xl`)}>
                 <h1 className="text-white text-lg font-bold py-1 px-2">{title}</h1>
                 <div className="bg-white rounded-b-xl">
