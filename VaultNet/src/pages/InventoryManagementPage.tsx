@@ -15,6 +15,7 @@ export function InventoryManagementPage(){
     const [containerMode, setContainerMode] = useState<MultiInfoContainerMode>(multiInfoContainerModes.INVISIBLE)
     const [openedLateralMenu, setOpenedLateralMenu] = useState<boolean>(false)
     const {messageInfo} = useContext(MessageContext)
+    const [creatingBusiness, setCreatingBusiness] = useState<boolean>(false);
 
     function onTopTableTouched(){
         setContainerMode(multiInfoContainerModes.CATEGORY_DETAIL)
@@ -34,7 +35,10 @@ export function InventoryManagementPage(){
                 messageInfo && <MessageWindow title={messageInfo.title} message={messageInfo.message} type={messageInfo.type} mode={messageInfo.mode} onConfirm={messageInfo.onConfirm}
                 onCancel={messageInfo.onCancel} onRetry={messageInfo.onRetry}/> 
             }
-            <CreateBusinessWindow/>
+            {
+                creatingBusiness && 
+                <CreateBusinessWindow showUsersSection={false} closeFunction={()=>setCreatingBusiness(false)}/>
+            }
             <div className="w-full">
                 <BusinessHeader businessName="Garage Cocina legado" userImageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThBuS01sBVXcXM81DVC7ROvpFECrHjcDJjFw&s"
                 setOpenedMenu={setOpenedLateralMenu}/>
