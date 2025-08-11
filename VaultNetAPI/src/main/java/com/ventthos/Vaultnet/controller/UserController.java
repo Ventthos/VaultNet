@@ -23,6 +23,7 @@ public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
+
     public UserController(UserService userService, JwtUtil jwtUtil){
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -68,6 +69,24 @@ public class UserController {
         return ResponseEntity.ok(
                 new ApiResponse<>("Success",  Code.ELEMENT_GET_SUCCESSFUL.name(),
                         Code.ELEMENT_GET_SUCCESSFUL.getDefaultMessage(), users)
+        );
+    }
+
+    @GetMapping("auth/verify")
+    public ResponseEntity<ApiResponse<Boolean>> verifyToken(@RequestHeader("Authorization") String authHeader){
+        String token = authHeader.startsWith("Bearer ")
+                ? authHeader.substring(7)
+                : authHeader;
+
+        boolean isValid = jwtUtil.validateToken(token);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        "Success",
+                        Code.TOKEN_VALIDATED.name(),
+                        Code.TOKEN_VALIDATED.getDefaultMessage(),
+                        isValid
+                )
         );
     }
 }

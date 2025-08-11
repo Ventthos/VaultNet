@@ -20,6 +20,7 @@ import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.service.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,10 +38,11 @@ public class BusinessController {
     private final UnitService unitService;
     private final ProductService productService;
     private final ChangeService changeService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public BusinessController(BusinessService businessService, JwtUtil jwtUtil, UserService userService,
                               CategoryService categoryService, UnitService unitService, ProductService productService,
-                              ChangeService changeService){
+                              ChangeService changeService, SimpMessagingTemplate messagingTemplate){
         this.businessService = businessService;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
@@ -48,6 +50,7 @@ public class BusinessController {
         this.unitService = unitService;
         this.productService = productService;
         this.changeService = changeService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @PostMapping
@@ -100,6 +103,10 @@ public class BusinessController {
         userService.validateUserBelongsToBusiness(userId, id);
 
         CategoryResponseDto categoryResponse = categoryService.createCategory(newCategoryBody, id);
+
+        // Notificar a todos los suscriptores por WebSocket
+        messagingTemplate.convertAndSend("/topic/categories/" + id, categoryResponse);
+
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         "Success",

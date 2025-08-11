@@ -39,8 +39,9 @@ export function Login(){
             
             return
         }
+        localStorage.setItem("vaultnet-token", response.success?.token as string)
+        window.location.href = "/"
         clearMessage();
-        console.log("si se pudo")
         
     }  
     async function register(event:React.FormEvent<HTMLFormElement>) {

@@ -42,6 +42,8 @@ public class CategoryService {
         // Actualizamos la lista de categorias del business
         business.getCategories().add(savedCategory);
 
+
+
         return categoryParser.toCategoryDto(savedCategory.getCategoryId(), category);
 
     }

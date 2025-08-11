@@ -28,7 +28,8 @@ public enum Code {
     PRODUCT_EDITED("El producto se editó correctamente", HttpStatus.OK),
     METHOD_NOT_ALLOWED("El método solicitado no está disponible", HttpStatus.METHOD_NOT_ALLOWED),
     USERS_ADDED("Usuarios agregados al negocio", HttpStatus.OK),
-    MISSING_PARAMETER("Faltaron algunos parámetros en la solicitud", HttpStatus.BAD_REQUEST);
+    MISSING_PARAMETER("Faltaron algunos parámetros en la solicitud", HttpStatus.BAD_REQUEST),
+    TOKEN_VALIDATED("Token validado", HttpStatus.OK);
 
     private final String defaultMessage;
     private final HttpStatus httpStatus;
