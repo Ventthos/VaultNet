@@ -105,7 +105,7 @@ public class BusinessController {
         CategoryResponseDto categoryResponse = categoryService.createCategory(newCategoryBody, id);
 
         // Notificar a todos los suscriptores por WebSocket
-        messagingTemplate.convertAndSend("/topic/categories/" + id, categoryResponse);
+        messagingTemplate.convertAndSend("/topic/business/"+id+"/categories", categoryResponse);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(

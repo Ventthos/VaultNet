@@ -13,6 +13,11 @@ import { getBusinessesFromUser } from "../services/business/GetBusinessesService
 import type { Business } from "../models/business/local/Business";
 import { verifyToken as verifyTokenService} from "../services/users/TokenVerify";
 import { AuthContext } from "../contexts/AuthContext";
+import { getCategories } from "../services/categories/GetCategories";
+import type { Category } from "../models/category/Local/Category";
+import { Client } from "@stomp/stompjs";
+import { createSocketForBusiness } from "../services/socket/CreateSocket";
+import { CreationMenu } from "../components/InventoryManagementPage/CreationMenu";
 
 export function InventoryManagementPage(){
     const {containerRef} = useDraggableContainer();
@@ -21,7 +26,10 @@ export function InventoryManagementPage(){
     const {messageInfo, setError, setWaiting, clearMessage} = useContext(MessageContext)
     const [creatingBusiness, setCreatingBusiness] = useState<boolean>(false);
     const [businesses, setBusinesses] = useState<Business[]>([]);
-    const {setToken} = useContext(AuthContext)
+    const {setToken, token} = useContext(AuthContext)
+    const [currentBusiness, setCurrentBusiness] = useState<Business | null>(null)
+    const [currentCategories,setCurrentCategories] = useState<Category[]>()
+    const [socketConnection, setSocketConnection] = useState<Client | null>(null)
 
 
     async function getBusinesses(token: string){
@@ -47,14 +55,41 @@ export function InventoryManagementPage(){
         setContainerMode(multiInfoContainerModes.INVISIBLE)
     }
 
-    function onBusinessClick(business:Business){
-        console.log(business)
+    function onCategoryEmission(category:Category){
+        setCurrentCategories(prev=>{
+            if(prev === undefined || prev === null) return [category]
+            const index = prev.findIndex(c => c.id === category.id);
+            if(index !== -1){
+                const newCategories = [...prev];
+                newCategories[index] = category;
+                return newCategories;
+            }
+            return [...prev, category];
+        })
     }
+
+    async function onBusinessClick(business:Business){
+        if(socketConnection){
+            socketConnection.deactivate()
+        }
+        setCurrentBusiness(business)
+        setWaiting({message:"Cargando categorias"})
+        const categoriesResponse = await getCategories(business.id, token)
+        if(categoriesResponse.error){
+            setError({message:categoriesResponse.error.message, mode:"accept"})
+            return
+        }
+        setCurrentCategories(categoriesResponse.success?.data)
+        setSocketConnection(createSocketForBusiness(token, business.id, onCategoryEmission))
+        clearMessage()
+    }
+
+    
 
     useEffect(()=>{
         const getInfo = async ()=>{
             const vaultnetToken = localStorage.getItem("vaultnet-token")
-            if(!vaultnetToken || ! (await verifyTokenService(vaultnetToken!)).success?.data){
+            if(!vaultnetToken || ! (await verifyTokenService(vaultnetToken)).success?.data){
                 window.location.href = "/login"
                 return
             }
@@ -83,10 +118,21 @@ export function InventoryManagementPage(){
             <LateralMenu openedMenu={openedLateralMenu} setOpenedMenu={setOpenedLateralMenu}/>
             
             <BusinessesDisplay businesses={businesses} onBusinessClick={onBusinessClick}/>
-            <MultiInfoContainer mode={containerMode} object={null}/>
+            <MultiInfoContainer mode={containerMode} object={null} businessId={currentBusiness?.id ?? -1}/>
+            <CreationMenu containerStyles={containerMode !== multiInfoContainerModes.INVISIBLE ? "md:right-76" : ""}
+            onCreateCategory={()=> {setContainerMode(multiInfoContainerModes.CATEGORY_DETAIL);}}/>
             <div ref={containerRef} className="aspect-square w-[5000px] relative bg-[url(/img/grid.png)]" onClick={dismissDetails}>
+                {
+                    currentCategories?.map((category, index) => (
+                    <CategoryTable 
+                        key={category.id ?? index} 
+                        category={category}      
+                        onHeaderTouched={onTopTableTouched} 
+                        onProductTouched={onProductTouched} 
+                    />
+                    ))
+                }
                 
-                <CategoryTable onHeaderTouched={onTopTableTouched} onProductTouched={onProductTouched}/>
             </div>
         </div>
     )

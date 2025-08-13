@@ -26,6 +26,13 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
                                    WebSocketHandler wsHandler,
                                    Map<String, Object> attributes) throws Exception {
         URI uri = request.getURI();
+
+        String path = uri.getPath();
+
+        if ("/ws/info".equals(path)) {
+            return true;
+        }
+
         String query = uri.getQuery();
 
         if (query == null) {

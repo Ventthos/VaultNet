@@ -14,10 +14,11 @@ export type MultiInfoContainerMode = typeof multiInfoContainerModes[keyof typeof
 
 type Props = {
     readonly mode: MultiInfoContainerMode,
-    readonly object: any
+    readonly object: any,
+    readonly businessId: number
 }
 
-export function MultiInfoContainer({mode, object}:Props){
+export function MultiInfoContainer({mode, object, businessId}:Props){
     const width = useWindowWidth()
     const [opened, setOpened] = useState<boolean>(false)
 
@@ -44,7 +45,7 @@ export function MultiInfoContainer({mode, object}:Props){
                         mode === multiInfoContainerModes.PRODUCT_DETAIL ?
                         <ProductDetail/>
                         :
-                        <CategoryDetail/>
+                        <CategoryDetail category={null} businessId={businessId}/>
                     }
                 
                 </div>

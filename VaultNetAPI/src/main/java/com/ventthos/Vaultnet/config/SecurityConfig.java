@@ -30,12 +30,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // 🟢 Esto es clave para que Spring Security respete tu configuración CORS
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 🟢 Permite cualquier OPTIONS
-                        .requestMatchers("/user/auth/**").permitAll()
-                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permite cualquier OPTIONS
+                        .requestMatchers("/user/auth/**").permitAll() // Para autentificación
+                        .requestMatchers("/uploads/**").permitAll() // Para los uploads y archivos
+                        .requestMatchers("/ws/**", "/app/**", "/topic/**", "/error").permitAll() // Para el socket
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

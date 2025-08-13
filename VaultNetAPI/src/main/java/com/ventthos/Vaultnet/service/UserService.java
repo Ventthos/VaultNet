@@ -9,6 +9,7 @@ import com.ventthos.Vaultnet.exceptions.ApiException;
 import com.ventthos.Vaultnet.exceptions.Code;
 import com.ventthos.Vaultnet.parsers.UserParser;
 import com.ventthos.Vaultnet.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -91,12 +92,14 @@ public class UserService {
         return userParser.toUserResponseDto(loggedUser.getUserId(), loggedUser);
     }
 
+
     public UserResponseDto GetUserById(Long id) throws IllegalArgumentException{
         // Obtenemos el usuario si existe
         User loggedUser = getUserOrTrow(id);
         return userParser.toUserResponseDto(id, loggedUser);
     }
 
+    @Transactional
     public UserBusinessesResponse getUserBusinesses(Long id) throws IllegalArgumentException{
 
         // Obtenemos el usuario existente
@@ -111,13 +114,10 @@ public class UserService {
         );
     }
 
+    @Transactional
     public User getUserOrTrow(Long userId){
-        Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isEmpty()){
-            throw new ApiException(Code.USER_NOT_FOUND);
-        }
-
-        return userOptional.get();
+        return userRepository.findByIdWithBusinesses(userId)
+                .orElseThrow(() -> new ApiException(Code.USER_NOT_FOUND));
     }
 
     public User getUserOrTrow(String userEmail){
@@ -129,6 +129,7 @@ public class UserService {
         return userOptional.get();
     }
 
+    @Transactional
     public void validateUserBelongsToBusiness(Long userId, Long businessId) {
         if(getUserBusinesses(userId).businesses().stream()
                 .noneMatch(userBusinessInResponse -> userBusinessInResponse.businessId().equals(businessId)))

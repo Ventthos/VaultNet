@@ -6,7 +6,7 @@ export function BusinessesDisplay({businesses, onBusinessClick}:{readonly busine
         overflow-y-auto scrollbar-fade">
             <div className="flex-1 flex flex-col items-center gap-2 ">
                 {businesses.map((business:Business)=>(
-                    <img src={business.logo} alt=""  className="w-12 h-12 rounded-full" key={business.id}/>
+                    <img src={business.logo} alt=""  className="w-12 h-12 rounded-full" key={business.id} onClick={()=>onBusinessClick(business)}/>
                 ))}
             </div>
             <div className="rounded-full w-12 h-12 bg-(--light-gray-2) flex items-center justify-center mt-2">

@@ -1,6 +1,8 @@
 import { InputWithLabel } from "../generalUse/InputWithLabel";
 
 export function ProductDetail(){
+    
+
     return( 
         <div className="p-4 w-full flex flex-col items-center overflow-y-auto h-full">
             <h1 className="text-2xl mb-2">Producto</h1>
